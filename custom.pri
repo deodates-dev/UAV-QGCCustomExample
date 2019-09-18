@@ -1,5 +1,10 @@
 message("Adding Custom Plugin")
 
+LinuxBuild {
+    QT += svg
+    QTPLUGIN += qtvirtualkeyboardplugin
+}
+
 #-- Version control
 #   Major and minor versions are defined here (manually)
 

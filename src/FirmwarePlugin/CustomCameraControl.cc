@@ -70,7 +70,8 @@ CustomCameraControl::setVideoMode()
         qCDebug(CustomCameraLog) << "setVideoMode()";
         Fact* pFact = getFact(kCAM_MODE);
         if(pFact) {
-            pFact->setRawValue(CAM_MODE_VIDEO);
+            if(vendor() != "NextVision")
+                pFact->setRawValue(CAM_MODE_VIDEO);
             _setCameraMode(CAM_MODE_VIDEO);
         }
     }
@@ -84,7 +85,8 @@ CustomCameraControl::setPhotoMode()
         qCDebug(CustomCameraLog) << "setPhotoMode()";
         Fact* pFact = getFact(kCAM_MODE);
         if(pFact) {
-            pFact->setRawValue(CAM_MODE_PHOTO);
+            if(vendor() != "NextVision")
+                pFact->setRawValue(CAM_MODE_PHOTO);
             _setCameraMode(CAM_MODE_PHOTO);
         }
     }
@@ -101,7 +103,47 @@ CustomCameraControl::_setVideoStatus(VideoStatus status)
 void
 CustomCameraControl::handleCaptureStatus(const mavlink_camera_capture_status_t& cap)
 {
-    QGCCameraControl::handleCaptureStatus(cap);
+    if(vendor() == "NextVision") {
+        mavlink_camera_capture_status_t capFixed(cap);
+        // TODO: nextvision sends bad image_status all the time
+        capFixed.image_status = 0;
+        // TODO: nextvision doesn't respond to video stop command to change it's status
+        capFixed.video_status = 0;
+        QGCCameraControl::handleCaptureStatus(capFixed);
+    }
+    else {
+        QGCCameraControl::handleCaptureStatus(cap);
+    }
+}
+
+//-----------------------------------------------------------------------------
+void
+CustomCameraControl::_mavCommandResult(int vehicleId, int component, int command, int result, bool noReponseFromVehicle)
+{
+    // TODO: remove after everithing is fixed on the camera side
+    if(vendor() == "NextVision") {
+        switch(command) {
+            case MAV_CMD_RESET_CAMERA_SETTINGS:
+                qDebug() << "DEBUG: MAV_CMD_RESET_CAMERA_SETTINGS" << ((result == 4) ? "Failed" : "Success");
+                break;
+            case MAV_CMD_VIDEO_START_CAPTURE:
+                qDebug() << "DEBUG: MAV_CMD_VIDEO_START_CAPTURE" << ((result == 4) ? "Failed" : "Success");
+                break;
+            case MAV_CMD_VIDEO_STOP_CAPTURE:
+                qDebug() << "DEBUG: MAV_CMD_VIDEO_STOP_CAPTURE" << ((result == 4) ? "Failed" : "Success");
+                break;
+            case MAV_CMD_REQUEST_CAMERA_CAPTURE_STATUS:
+                qDebug() << "DEBUG: MAV_CMD_REQUEST_CAMERA_CAPTURE_STATUS" << ((result == 4) ? "Failed" : "Success");
+                break;
+            case MAV_CMD_REQUEST_STORAGE_INFORMATION:
+                qDebug() << "DEBUG: MAV_CMD_REQUEST_STORAGE_INFORMATION" << ((result == 4) ? "Failed" : "Success");
+                break;
+            case MAV_CMD_IMAGE_START_CAPTURE:
+                qDebug() << "DEBUG: MAV_CMD_IMAGE_START_CAPTURE" << ((result == 4) ? "Failed" : "Success");
+                break;
+        }
+    }
+    QGCCameraControl::_mavCommandResult(vehicleId, component, command, result, noReponseFromVehicle);
 }
 
 //-----------------------------------------------------------------------------

@@ -31,6 +31,9 @@ public:
     Q_PROPERTY(Fact*        irPalette       READ    irPalette           NOTIFY parametersReady)
     Q_PROPERTY(Fact*        videoEncoding   READ    videoEncoding       NOTIFY parametersReady)
 
+    void
+    _mavCommandResult(int vehicleId, int component, int command, int result, bool noReponseFromVehicle) override;
+
     Fact*       irPalette           ();
     Fact*       videoEncoding       ();
 
