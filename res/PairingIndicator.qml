@@ -49,7 +49,7 @@ Item {
         onPairingStatusChanged: {
             if(QGroundControl.pairingManager.pairingStatus === PairingManager.PairingSuccess) {
                 if(QGroundControl.pairingManager.pairedVehicle !== "") {
-                    QGroundControl.pairingManager.connectToPairedDevice(QGroundControl.pairingManager.pairedVehicle)
+                    QGroundControl.pairingManager.connectToDevice(QGroundControl.pairingManager.pairedVehicle)
                 }
             }
         }
@@ -574,7 +574,7 @@ Item {
                             Layout.column:          2
                             text:                   qsTr("Connect")
                             onClicked: {
-                                QGroundControl.pairingManager.connectToPairedDevice(modelData)
+                                QGroundControl.pairingManager.connectToDevice(modelData)
                                 connectionPopup.close()
                                 progressPopup.open()
                             }
