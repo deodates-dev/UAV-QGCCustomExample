@@ -92,7 +92,7 @@ Item {
             id:             thermalBackgroundRect
             width:          buttonsRow.width  + (ScreenTools.defaultFontPixelWidth  * 4)
             height:         buttonsRow.height + (ScreenTools.defaultFontPixelHeight)
-            visible:        QGroundControl.videoManager.hasThermal || _irPaletteFact || _camera.vendor === "NextVision"
+            visible:        QGroundControl.videoManager.hasThermal || _irPaletteFact
             anchors.horizontalCenter: parent.horizontalCenter
             Component.onCompleted: {
                 if(_irPaletteFact && QGroundControl.videoManager.hasThermal) {
@@ -131,7 +131,7 @@ Item {
                     id:                 thermalPip
                     width:              buttonSize
                     height:             buttonSize
-                    visible:            _camera.vendor !== "NextVision"
+                    visible:            _camera && _camera.thermalStreamInstance
                     iconSource:        "/custom/img/thermal-pip.svg"
                     onClicked:  {
                         _camera.thermalMode = QGCCameraControl.THERMAL_PIP
@@ -658,7 +658,8 @@ Item {
                             value:          _camera ? _camera.thermalOpacity : 0
                             live:           true
                             onValueChanged: {
-                                _camera.thermalOpacity = value
+                                if(_camera)
+                                    _camera.thermalOpacity = value
                             }
                         }
                     }
