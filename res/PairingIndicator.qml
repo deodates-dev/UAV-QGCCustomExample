@@ -13,10 +13,14 @@ import QtQuick.Layouts          1.11
 import QtQuick.Dialogs          1.3
 
 import QGroundControl                       1.0
+import QGroundControl.Controllers           1.0
 import QGroundControl.Controls              1.0
+import QGroundControl.FactControls          1.0
+import QGroundControl.FactSystem            1.0
 import QGroundControl.MultiVehicleManager   1.0
-import QGroundControl.ScreenTools           1.0
 import QGroundControl.Palette               1.0
+import QGroundControl.ScreenTools           1.0
+import QGroundControl.SettingsManager       1.0
 
 //-------------------------------------------------------------------------
 //-- GPS Indicator
@@ -40,18 +44,6 @@ Item {
             connectionPopup.open()
         } else {
             mhPopup.open()
-        }
-    }
-
-    Connections {
-        target: QGroundControl.pairingManager
-        //-- Connect automatically once paired
-        onPairingStatusChanged: {
-            if(QGroundControl.pairingManager.pairingStatus === PairingManager.PairingSuccess) {
-                if(QGroundControl.pairingManager.pairedVehicle !== "") {
-                    QGroundControl.pairingManager.connectToDevice(QGroundControl.pairingManager.pairedVehicle)
-                }
-            }
         }
     }
 
@@ -145,6 +137,45 @@ Item {
                     smooth:             true
                     color:              qgcPal.text
                     anchors.horizontalCenter: parent.horizontalCenter
+                }
+                Item { width: 1; height: ScreenTools.defaultFontPixelHeight  * 2; }
+                GridLayout {
+                    columns:            2
+                    columnSpacing:      ScreenTools.defaultFontPointSize
+                    rowSpacing:         ScreenTools.defaultFontPointSize * 0.25
+
+                    QGCLabel {
+                        text:               qsTr("Pair channel:")
+                        Layout.row:         0
+                        Layout.column:      0
+                        Layout.columnSpan:  1
+                        Layout.fillWidth:   true
+                    }
+                    QGCComboBox {
+                        model:              QGroundControl.microhardManager.channelLabels
+                        currentIndex:       QGroundControl.microhardManager.pairingChannel - QGroundControl.microhardManager.channelMin
+                        Layout.row:         0
+                        Layout.column:      1
+                        Layout.columnSpan:  1
+                        Layout.fillWidth:   true
+                        onActivated:        QGroundControl.microhardManager.pairingChannel = currentIndex + QGroundControl.microhardManager.channelMin
+                    }
+                    QGCLabel {
+                        text:               qsTr("Connect channel:")
+                        Layout.row:         1
+                        Layout.column:      0
+                        Layout.columnSpan:  1
+                        Layout.fillWidth:   true
+                    }
+                    QGCComboBox {
+                        model:              QGroundControl.microhardManager.channelLabels
+                        currentIndex:       QGroundControl.microhardManager.connectingChannel - QGroundControl.microhardManager.channelMin
+                        Layout.row:         1
+                        Layout.column:      1
+                        Layout.columnSpan:  1
+                        Layout.fillWidth:   true
+                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin)
+                    }
                 }
                 Item { width: 1; height: ScreenTools.defaultFontPixelHeight  * 2; }
                 QGCButton {
@@ -620,6 +651,30 @@ Item {
                 } // GridLayout
 
                 Item { width: 1; height: _contentSpacing; }
+
+                GridLayout {
+                    columns:            2
+                    columnSpacing:      ScreenTools.defaultFontPointSize
+                    rowSpacing:         ScreenTools.defaultFontPointSize * 0.25
+                    visible:            QGroundControl.pairingManager ? (QGroundControl.pairingManager.connectedDeviceNameList.length > 0 && !cancelButton.visible) : false
+
+                    QGCLabel {
+                        text:               qsTr("Connect channel:")
+                        Layout.row:         0
+                        Layout.column:      0
+                        Layout.columnSpan:  1
+                        Layout.fillWidth:   true
+                    }
+                    QGCComboBox {
+                        model:              QGroundControl.microhardManager.channelLabels
+                        currentIndex:       QGroundControl.microhardManager.connectingChannel - QGroundControl.microhardManager.channelMin
+                        Layout.row:         0
+                        Layout.column:      1
+                        Layout.columnSpan:  1
+                        Layout.fillWidth:   true
+                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin)
+                    }
+                }
 
                 QGCButton {
                     width:              _contentWidth
