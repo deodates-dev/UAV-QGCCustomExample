@@ -360,7 +360,7 @@ Item {
                 }
                 Item { width: 1; height: _contentSpacing; visible: connectedIndicator.visible; }
                 QGCLabel {
-                    text:               QGroundControl.pairingManager.pairedVehicle
+                    text:               QGroundControl.pairingManager.connectedVehicle
                     visible:            connectedIndicator.visible
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
