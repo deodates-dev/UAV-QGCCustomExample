@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   (c) 2009-2016 QGROUNDCONTROL PROJECT <http://www.qgroundcontrol.org>
+ *   (c) 2009-2019 QGROUNDCONTROL PROJECT <http://www.qgroundcontrol.org>
  *
  * QGroundControl is licensed according to the terms in the file
  * COPYING.md in the root of the source code directory.
@@ -616,8 +616,8 @@ Item {
                         delegate: QGCColoredImage {
                             Layout.row:             2 + parent._baseIndex + index
                             Layout.column:          3
-                            Layout.minimumWidth:    ScreenTools.defaultFontPixelWidth
-                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight
+                            Layout.minimumWidth:    ScreenTools.defaultFontPixelWidth * 2
+                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 2
                             height:                 ScreenTools.defaultFontPixelHeight
                             width:                  height
                             smooth:                 true
