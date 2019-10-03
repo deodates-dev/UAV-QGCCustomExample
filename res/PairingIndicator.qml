@@ -484,9 +484,9 @@ Item {
                         delegate: QGCColoredImage {
                             Layout.row:             2 + index
                             Layout.column:          0
-                            Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight
-                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight
-                            height:                 ScreenTools.defaultFontPixelHeight
+                            Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight * 1.5
+                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1.5
+                            height:                 ScreenTools.defaultFontPixelHeight * 1.5
                             width:                  height
                             smooth:                 true
                             mipmap:                 true
@@ -533,12 +533,13 @@ Item {
                         }
                     }
                     Repeater {
+                        // Unpair replacement
                         model: parent._connectedModel
                         delegate: Item {
                             Layout.row:             2 + index
                             Layout.column:          3
-                            Layout.minimumWidth:    ScreenTools.defaultFontPixelWidth
-                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight
+                            Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight * 1.5
+                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1.5
                         }
                     }
                 } // GridLayout
@@ -574,9 +575,9 @@ Item {
                         delegate: QGCColoredImage {
                             Layout.row:             2 + parent._baseIndex + index
                             Layout.column:          0
-                            Layout.minimumWidth:    ScreenTools.defaultFontPixelWidth
-                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight
-                            height:                 ScreenTools.defaultFontPixelHeight
+                            Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight * 1.5
+                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1.5
+                            height:                 ScreenTools.defaultFontPixelHeight * 1.5
                             width:                  height
                             smooth:                 true
                             mipmap:                 true
@@ -616,9 +617,9 @@ Item {
                         delegate: QGCColoredImage {
                             Layout.row:             2 + parent._baseIndex + index
                             Layout.column:          3
-                            Layout.minimumWidth:    ScreenTools.defaultFontPixelWidth * 2
-                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 2
-                            height:                 ScreenTools.defaultFontPixelHeight
+                            Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight * 1.5
+                            Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1.5
+                            height:                 ScreenTools.defaultFontPixelHeight * 1.5
                             width:                  height
                             smooth:                 true
                             mipmap:                 true
