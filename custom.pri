@@ -18,7 +18,7 @@ win32 {
 CUSTOM_QGC_VERSION = $${CUSTOM_QGC_VER_MAJOR}.$${CUSTOM_QGC_VER_MINOR}.$${CUSTOM_QGC_VER_BUILD}
 
 DEFINES -= GIT_VERSION=\"\\\"$$GIT_VERSION\\\"\"
-DEFINES += GIT_VERSION=\"\\\"$$CUSTOM_QGC_VERSION\\\"\"
+DEFINES += GIT_VERSION=\"\\\"v$$CUSTOM_QGC_VERSION\\\"\"
 
 message(Custom QGC Version: $${CUSTOM_QGC_VERSION})
 
@@ -50,10 +50,10 @@ QGC_APP_COPYRIGHT   = "Copyright (C) 2019 QGroundControl Development Team. All r
 
 # Our own, custom resources
 RESOURCES += \
-    $$QGCROOT/custom/custom.qrc
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/custom.qrc
 
 QML_IMPORT_PATH += \
-    $$QGCROOT/custom/res
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/res
 
 # Our own, custom sources
 SOURCES += \
@@ -73,20 +73,20 @@ INCLUDEPATH += \
 # Custom Firmware/AutoPilot Plugin
 
 INCLUDEPATH += \
-    $$QGCROOT/custom/src/FirmwarePlugin \
-    $$QGCROOT/custom/src/AutoPilotPlugin
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/AutoPilotPlugin
 
 HEADERS+= \
-    $$QGCROOT/custom/src/AutoPilotPlugin/CustomAutoPilotPlugin.h \
-    $$QGCROOT/custom/src/FirmwarePlugin/CustomCameraControl.h \
-    $$QGCROOT/custom/src/FirmwarePlugin/CustomCameraManager.h \
-    $$QGCROOT/custom/src/FirmwarePlugin/CustomFirmwarePlugin.h \
-    $$QGCROOT/custom/src/FirmwarePlugin/CustomFirmwarePluginFactory.h \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/AutoPilotPlugin/CustomAutoPilotPlugin.h \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin/CustomCameraControl.h \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin/CustomCameraManager.h \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin/CustomFirmwarePlugin.h \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin/CustomFirmwarePluginFactory.h \
 
 SOURCES += \
-    $$QGCROOT/custom/src/AutoPilotPlugin/CustomAutoPilotPlugin.cc \
-    $$QGCROOT/custom/src/FirmwarePlugin/CustomCameraControl.cc \
-    $$QGCROOT/custom/src/FirmwarePlugin/CustomCameraManager.cc \
-    $$QGCROOT/custom/src/FirmwarePlugin/CustomFirmwarePlugin.cc \
-    $$QGCROOT/custom/src/FirmwarePlugin/CustomFirmwarePluginFactory.cc \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/AutoPilotPlugin/CustomAutoPilotPlugin.cc \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin/CustomCameraControl.cc \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin/CustomCameraManager.cc \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin/CustomFirmwarePlugin.cc \
+    $$QGCROOT/$$QGC_CUSTOM_BUILD_FOLDER/src/FirmwarePlugin/CustomFirmwarePluginFactory.cc \
 
