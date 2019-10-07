@@ -23,12 +23,13 @@ import QGroundControl.ScreenTools           1.0
 import QGroundControl.SettingsManager       1.0
 
 //-------------------------------------------------------------------------
-//-- GPS Indicator
+//-- Pairing Indicator
 Item {
     id:             _root
     width:          pairingRow.width * 1.1
     anchors.top:    parent.top
     anchors.bottom: parent.bottom
+    visible:        QGroundControl.pairingManager.usePairing
 
     property bool _light:               qgcPal.globalTheme === QGCPalette.Light && !activeVehicle
     property real _contentWidth:        ScreenTools.defaultFontPixelWidth  * 34
