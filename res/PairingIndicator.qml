@@ -111,8 +111,9 @@ Item {
                 QGCLabel {
                     text:           kPairingManager
                     font.family:    ScreenTools.demiboldFontFamily
-                    font.pointSize: ScreenTools.mediumFontPointSize
+                    font.pointSize: ScreenTools.mediumFontPointSize * 1.5
                     anchors.horizontalCenter: parent.horizontalCenter
+                    horizontalAlignment: Text.AlignHCenter
                 }
                 Rectangle {
                     width:          _contentWidth
@@ -223,8 +224,9 @@ Item {
                 QGCLabel {
                     text:           kPairingManager
                     font.family:    ScreenTools.demiboldFontFamily
-                    font.pointSize: ScreenTools.mediumFontPointSize
+                    font.pointSize: ScreenTools.mediumFontPointSize * 1.5
                     anchors.horizontalCenter: parent.horizontalCenter
+                    horizontalAlignment: Text.AlignHCenter
                 }
                 Rectangle {
                     width:          _contentWidth
@@ -297,8 +299,9 @@ Item {
                 QGCLabel {
                     text:               kPairingManager
                     font.family:        ScreenTools.demiboldFontFamily
-                    font.pointSize:     ScreenTools.mediumFontPointSize
+                    font.pointSize:     ScreenTools.mediumFontPointSize * 1.5
                     anchors.horizontalCenter: parent.horizontalCenter
+                    horizontalAlignment: Text.AlignHCenter
                 }
                 QGCLabel {
                     text:               QGroundControl.pairingManager ? QGroundControl.pairingManager.pairingStatusStr : ""
@@ -443,39 +446,45 @@ Item {
             height:             connectionCol.height + (ScreenTools.defaultFontPixelHeight  * 2)
             anchors.centerIn:   parent
             ColumnLayout {
-                id:                     connectionCol
-                spacing:                _contentSpacing
-                anchors.centerIn:       parent
+                id:                      connectionCol
+                spacing:                 _contentSpacing
+                anchors.centerIn:        parent
                 QGCLabel {
-                    text:               kPairingManager
-                    font.family:        ScreenTools.demiboldFontFamily
-                    font.pointSize:     ScreenTools.mediumFontPointSize
-                    Layout.fillWidth:   true
+                    text:                kPairingManager
+                    font.family:         ScreenTools.demiboldFontFamily
+                    font.pointSize:      ScreenTools.mediumFontPointSize * 1.5
+                    Layout.fillWidth:    true
+                    horizontalAlignment: Text.AlignHCenter
                 }
                 Rectangle {
-                    Layout.fillWidth:   true
-                    height:             1
-                    color:              qgcPal.globalTheme !== QGCPalette.Light ? Qt.rgba(1,1,1,0.25) : Qt.rgba(0,0,0,0.25)
+                    Layout.fillWidth:    true
+                    height:              1
+                    color:               qgcPal.globalTheme !== QGCPalette.Light ? Qt.rgba(1,1,1,0.25) : Qt.rgba(0,0,0,0.25)
                 }
 
                 //-----------------------------------------------------------
-                // Connected devices
+                // Connected & available devices
                 GridLayout {
                     id: _connectedLayout
-                    columns:            5
-                    visible:            _connectedVisible
-                    columnSpacing:      ScreenTools.defaultFontPointSize
-                    rowSpacing:         ScreenTools.defaultFontPointSize * 0.25
-                    property var _connectedModel: QGroundControl.pairingManager ? QGroundControl.pairingManager.connectedDeviceNameList : []
+                    columns:            4
+                    visible:            _connectedVisible || _availableVisible
+                    columnSpacing:      ScreenTools.defaultFontPointSize * 2
+                    rowSpacing:         ScreenTools.defaultFontPointSize * 0.5
+
+                    property var  _connectedModel: QGroundControl.pairingManager ? QGroundControl.pairingManager.connectedDeviceNameList : []
                     property bool _connectedVisible: QGroundControl.pairingManager ? (QGroundControl.pairingManager.connectedDeviceNameList.length > 0 && !cancelButton.visible) : false
+                    property var  _pairModel: QGroundControl.pairingManager ? QGroundControl.pairingManager.pairedDeviceNameList : []
+                    property bool _availableVisible: QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairedDeviceNameList.length > 0 && !cancelButton.visible) : false
+                    property real _baseIndex: 4 + (_connectedModel ? _connectedModel.length : 0)
+
                     QGCLabel {
-                        text:               qsTr("Connected Devices")
-                        visible:            QGroundControl.pairingManager ? (QGroundControl.pairingManager.connectedDeviceNameList.length > 0 && !cancelButton.visible) : false
+                        text:               qsTr("Connected Vehicles")
+                        visible:            parent._connectedVisible
                         font.family:        ScreenTools.demiboldFontFamily
                         font.pointSize:     ScreenTools.mediumFontPointSize
                         Layout.row:         0
                         Layout.column:      0
-                        Layout.columnSpan:  5
+                        Layout.columnSpan:  4
                         Layout.minimumWidth:ScreenTools.defaultFontPixelWidth * 14
                         Layout.fillWidth:   true
                     }
@@ -483,7 +492,8 @@ Item {
                     Repeater {
                         model: parent._connectedModel
                         delegate: QGCColoredImage {
-                            Layout.row:             2 + index
+                            Layout.row:             2 + index * 2
+                            Layout.rowSpan:         2
                             Layout.column:          0
                             Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight * 1.5
                             Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1.5
@@ -501,22 +511,25 @@ Item {
                     Repeater {
                         model:                  parent._connectedModel
                         delegate: QGCLabel {
-                            text:               deviceChannel
-                            Layout.row:         2 + index
+                            text:               deviceName
+                            font.family:        ScreenTools.demiboldFontFamily
+                            font.pointSize:     ScreenTools.mediumFontPointSize
+                            Layout.row:         2 + index * 2
                             Layout.column:      1
+                            Layout.minimumWidth:ScreenTools.defaultFontPixelWidth * 28
                             Layout.fillWidth:   true
-                            property string deviceChannel: QGroundControl.pairingManager.extractChannel(modelData);
+                            property string deviceName: QGroundControl.pairingManager.extractName(modelData);
                         }
                     }
                     Repeater {
                         model:                  parent._connectedModel
                         delegate: QGCLabel {
-                            text:               deviceName
-                            Layout.row:         2 + index
-                            Layout.column:      2
-                            Layout.minimumWidth:ScreenTools.defaultFontPixelWidth * 14
-                            Layout.fillWidth:   true
-                            property string deviceName: QGroundControl.pairingManager.extractName(modelData);
+                            text:               deviceChannel
+                            font.family:        ScreenTools.normalFontFamily
+                            font.pointSize:     ScreenTools.smallFontPointSize
+                            Layout.row:         2 + index * 2 + 1
+                            Layout.column:      1
+                            property string deviceChannel: QGroundControl.pairingManager.extractChannel(modelData);
                         }
                     }
                     Repeater {
@@ -524,8 +537,9 @@ Item {
                         delegate: QGCButton {
                             Layout.preferredWidth:  ScreenTools.defaultFontPixelHeight * 5
                             Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                            Layout.row:             2 + index
-                            Layout.column:          3
+                            Layout.row:             2 + index * 2
+                            Layout.rowSpan:         2
+                            Layout.column:          2
                             text:                   qsTr("Disconnect")
                             onClicked: {
                                 disconnectPrompt.open()
@@ -550,43 +564,32 @@ Item {
                         model: parent._connectedModel
                         delegate: Item {
                             Layout.row:             2 + index
+                            Layout.rowSpan:         2
                             Layout.column:          4
                             Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight * 1.5
                             Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1.5
                         }
                     }
-                } // GridLayout
-
-                Item { width: 1; height: 1; }
-
-                //-----------------------------------------------------------
-                // Available devices
-                GridLayout {
-                    columns:            5
-                    visible:            _availableVisible
-                    columnSpacing:      ScreenTools.defaultFontPointSize
-                    rowSpacing:         ScreenTools.defaultFontPointSize * 0.25
-                    property var _pairModel: QGroundControl.pairingManager ? QGroundControl.pairingManager.pairedDeviceNameList : []
-                    property bool _availableVisible: QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairedDeviceNameList.length > 0 && !cancelButton.visible) : false
-                    property real _baseIndex: 2 + (_connectedLayout._connectedModel ? _connectedLayout._connectedModel.length : 0)
 
                     QGCLabel {
-                        text:               qsTr("Available Devices")
+                        text:               qsTr("Available Vehicles")
                         visible:            parent._availableVisible
                         font.family:        ScreenTools.demiboldFontFamily
                         font.pointSize:     ScreenTools.mediumFontPointSize
                         Layout.row:         parent._baseIndex
                         Layout.column:      0
-                        Layout.columnSpan:  5
+                        Layout.columnSpan:  4
                         Layout.minimumWidth:ScreenTools.defaultFontPixelWidth * 14
                         Layout.fillWidth:   true
                     }
+
                     Item { width: 1; height: 1; Layout.row: parent._baseIndex + 1; Layout.column: 0; Layout.columnSpan: 4}
 
                     Repeater {
                         model: parent._pairModel
                         delegate: QGCColoredImage {
-                            Layout.row:             2 + parent._baseIndex + index
+                            Layout.row:             2 + (parent._baseIndex + index) * 2
+                            Layout.rowSpan:         2
                             Layout.column:          0
                             Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight * 1.5
                             Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1.5
@@ -604,22 +607,25 @@ Item {
                     Repeater {
                         model: parent._pairModel
                         delegate: QGCLabel {
-                            text:               deviceChannel
-                            Layout.row:         2 + parent._baseIndex + index
+                            text:               deviceName
+                            font.family:        ScreenTools.demiboldFontFamily
+                            font.pointSize:     ScreenTools.mediumFontPointSize
+                            Layout.row:         2 + (parent._baseIndex + index) * 2
                             Layout.column:      1
+                            Layout.minimumWidth:ScreenTools.defaultFontPixelWidth * 28
                             Layout.fillWidth:   true
-                            property string deviceChannel: QGroundControl.pairingManager.extractChannel(modelData);
+                            property string deviceName: QGroundControl.pairingManager.extractName(modelData);
                         }
                     }
                     Repeater {
                         model: parent._pairModel
                         delegate: QGCLabel {
-                            text:               deviceName
-                            Layout.row:         2 + parent._baseIndex + index
-                            Layout.column:      2
-                            Layout.minimumWidth:ScreenTools.defaultFontPixelWidth * 14
-                            Layout.fillWidth:   true
-                            property string deviceName: QGroundControl.pairingManager.extractName(modelData);
+                            text:               deviceChannel
+                            font.family:        ScreenTools.normalFontFamily
+                            font.pointSize:     ScreenTools.smallFontPointSize
+                            Layout.row:         2 + (parent._baseIndex + index) * 2 + 1
+                            Layout.column:      1
+                            property string deviceChannel: QGroundControl.pairingManager.extractChannel(modelData);
                         }
                     }
                     Repeater {
@@ -627,8 +633,9 @@ Item {
                         delegate: QGCButton {
                             Layout.preferredWidth:  ScreenTools.defaultFontPixelHeight * 5
                             Layout.preferredHeight: ScreenTools.defaultFontPixelHeight * 1.5
-                            Layout.row:             2 + parent._baseIndex + index
-                            Layout.column:          3
+                            Layout.row:             2 + (parent._baseIndex + index) * 2
+                            Layout.rowSpan:         2
+                            Layout.column:          2
                             text:                   qsTr("Connect")
                             onClicked: {
                                 QGroundControl.pairingManager.connectToDevice(deviceName)
@@ -641,8 +648,9 @@ Item {
                     Repeater {
                         model: parent._pairModel
                         delegate: QGCColoredImage {
-                            Layout.row:             2 + parent._baseIndex + index
-                            Layout.column:          4
+                            Layout.row:             2 + (parent._baseIndex + index) * 2
+                            Layout.rowSpan:         2
+                            Layout.column:          3
                             Layout.minimumWidth:    ScreenTools.defaultFontPixelHeight * 1.5
                             Layout.minimumHeight:   ScreenTools.defaultFontPixelHeight * 1.5
                             height:                 ScreenTools.defaultFontPixelHeight * 1.5
@@ -682,12 +690,14 @@ Item {
 
                 GridLayout {
                     columns:            2
-                    columnSpacing:      ScreenTools.defaultFontPointSize
-                    rowSpacing:         ScreenTools.defaultFontPointSize * 0.25
+                    columnSpacing:      ScreenTools.defaultFontPointSize * 2
+                    rowSpacing:         ScreenTools.defaultFontPointSize * 0.75
                     visible:            QGroundControl.pairingManager ? (QGroundControl.pairingManager.connectedDeviceNameList.length > 0 && !cancelButton.visible) : false
 
                     QGCLabel {
                         text:               qsTr("Connect channel:")
+                        font.family:        ScreenTools.demiboldFontFamily
+                        font.pointSize:     ScreenTools.defaultFontPointSize
                         Layout.row:         0
                         Layout.column:      0
                         Layout.columnSpan:  1
