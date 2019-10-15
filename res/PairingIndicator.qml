@@ -32,7 +32,7 @@ Item {
     visible:        QGroundControl.pairingManager.usePairing
 
     property bool _light:               qgcPal.globalTheme === QGCPalette.Light && !activeVehicle
-    property real _contentWidth:        ScreenTools.defaultFontPixelWidth  * 34
+    property real _contentWidth:        ScreenTools.defaultFontPixelWidth  * 46
     property real _contentSpacing:      ScreenTools.defaultFontPixelHeight * 0.5
     property real _rectWidth:           _contentWidth
     property real _rectHeight:          _contentWidth * 0.75
@@ -145,36 +145,47 @@ Item {
                     columns:            2
                     columnSpacing:      ScreenTools.defaultFontPointSize
                     rowSpacing:         ScreenTools.defaultFontPointSize * 0.25
+                    width:              _contentWidth
 
                     QGCLabel {
-                        text:               qsTr("Pair channel:")
+                        text:               qsTr("Pairing key:")
                         Layout.row:         0
                         Layout.column:      0
-                        Layout.columnSpan:  1
+                        Layout.fillWidth:   true
+                    }
+                    QGCTextField {
+                        id:                 encryptionKey
+                        text:               QGroundControl.microhardManager.encryptionKey
+                        Layout.row:         0
+                        Layout.column:      1
+                        Layout.fillWidth:   true
+                        echoMode:           TextInput.Password
+                    }
+                    QGCLabel {
+                        text:               qsTr("Pairing channel:")
+                        Layout.row:         1
+                        Layout.column:      0
                         Layout.fillWidth:   true
                     }
                     QGCComboBox {
                         model:              QGroundControl.microhardManager.channelLabels
                         currentIndex:       QGroundControl.microhardManager.pairingChannel - QGroundControl.microhardManager.channelMin
-                        Layout.row:         0
+                        Layout.row:         1
                         Layout.column:      1
-                        Layout.columnSpan:  1
                         Layout.fillWidth:   true
                         onActivated:        QGroundControl.microhardManager.pairingChannel = currentIndex + QGroundControl.microhardManager.channelMin
                     }
                     QGCLabel {
                         text:               qsTr("Connect channel:")
-                        Layout.row:         1
+                        Layout.row:         2
                         Layout.column:      0
-                        Layout.columnSpan:  1
                         Layout.fillWidth:   true
                     }
                     QGCComboBox {
                         model:              QGroundControl.microhardManager.channelLabels
                         currentIndex:       QGroundControl.microhardManager.connectingChannel - QGroundControl.microhardManager.channelMin
-                        Layout.row:         1
+                        Layout.row:         2
                         Layout.column:      1
-                        Layout.columnSpan:  1
                         Layout.fillWidth:   true
                         onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin)
                     }
@@ -183,11 +194,10 @@ Item {
                 QGCButton {
                     text:           qsTr("Pair a Vehicle")
                     width:          _contentWidth
-                    anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
                         mhPopup.close()
                         progressPopup.open()
-                        QGroundControl.pairingManager.startMicrohardPairing();
+                        QGroundControl.pairingManager.startMicrohardPairing(encryptionKey.text);
                     }
                 }
                 Item { width: 1; height: 1; }
@@ -526,7 +536,7 @@ Item {
                         delegate: QGCLabel {
                             text:               deviceChannel
                             font.family:        ScreenTools.normalFontFamily
-                            font.pointSize:     ScreenTools.smallFontPointSize
+                            font.pointSize:     ScreenTools.smallFontPointSize * 1.1
                             Layout.row:         2 + index * 2 + 1
                             Layout.column:      1
                             property string deviceChannel: QGroundControl.pairingManager.extractChannel(modelData);
@@ -622,7 +632,7 @@ Item {
                         delegate: QGCLabel {
                             text:               deviceChannel
                             font.family:        ScreenTools.normalFontFamily
-                            font.pointSize:     ScreenTools.smallFontPointSize
+                            font.pointSize:     ScreenTools.smallFontPointSize * 1.1
                             Layout.row:         2 + (parent._baseIndex + index) * 2 + 1
                             Layout.column:      1
                             property string deviceChannel: QGroundControl.pairingManager.extractChannel(modelData);
