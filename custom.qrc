@@ -10,6 +10,7 @@
         <file alias="CustomModeIndicator.qml">res/MainToolbar/CustomModeIndicator.qml</file>
         <file alias="CustomMultiVehicleSelector.qml">res/MainToolbar/CustomMultiVehicleSelector.qml</file>
         <file alias="CustomRCRSSIIndicator.qml">res/MainToolbar/CustomRCRSSIIndicator.qml</file>
+        <file alias="CustomROIIndicator.qml">res/MainToolbar/CustomROIIndicator.qml</file>
         <file alias="PairingIndicator.qml">res/PairingIndicator.qml</file>
         <file alias="PreFlightCheckList.qml">res/PreFlightCheckList.qml</file>
     </qresource>
@@ -32,10 +33,17 @@
         <file alias="horizontal_speed.svg">res/Images/horizontal_speed.svg</file>
         <file alias="microSD.svg">res/Images/microSD.svg</file>
         <file alias="odometer.svg">res/Images/odometer.svg</file>
+        <file alias="padlock.svg">res/Images/padlock.svg</file>
         <file alias="PairingButton.svg">res/Images/PairingButton.svg</file>
         <file alias="PairingConnected.svg">res/Images/PairingConnected.svg</file>
         <file alias="PairingError.svg">res/Images/PairingError.svg</file>
         <file alias="PairingIcon.svg">res/Images/PairingIcon.svg</file>
+        <file alias="palette_icon.svg">res/Images/palette_icon.svg</file>
+        <file alias="plan.svg">res/Images/plan.svg</file>
+        <file alias="plus_icon.svg">res/Images/plus_icon.svg</file>
+        <file alias="roi.svg">res/Images/roi.svg</file>
+        <file alias="settings.svg">res/Images/settings.svg</file>
+        <file alias="sliders.svg">res/Images/sliders.svg</file>
         <file alias="thermal-brightness.svg">res/Images/thermal-brightness.svg</file>
         <file alias="thermal-palette.svg">res/Images/thermal-palette.svg</file>
         <file alias="thermal-pip.svg">res/Images/thermal-pip.svg</file>
