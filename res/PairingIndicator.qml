@@ -155,7 +155,7 @@ Item {
                     }
                     QGCTextField {
                         id:                 encryptionKey
-                        text:               QGroundControl.microhardManager.encryptionKey
+                        text:               QGroundControl.pairingManager.pairingKey
                         Layout.row:         0
                         Layout.column:      1
                         Layout.fillWidth:   true
