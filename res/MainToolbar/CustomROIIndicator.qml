@@ -33,7 +33,7 @@ Item {
         id: roiInfo
 
         Rectangle {
-            width:  roiCol.width   + ScreenTools.defaultFontPixelWidth  * 3
+            width:  roiCol.width   + ScreenTools.defaultFontPixelWidth  * 6
             height: roiCol.height  + ScreenTools.defaultFontPixelHeight * 2
             radius: ScreenTools.defaultFontPixelHeight * 0.5
             color:  qgcPal.window
