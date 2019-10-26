@@ -32,7 +32,7 @@ Item {
     visible:        QGroundControl.pairingManager.usePairing
 
     property bool _light:               qgcPal.globalTheme === QGCPalette.Light && !activeVehicle
-    property real _contentWidth:        ScreenTools.defaultFontPixelWidth  * 46
+    property real _contentWidth:        ScreenTools.defaultFontPixelWidth  * 40
     property real _contentSpacing:      ScreenTools.defaultFontPixelHeight * 0.5
     property real _rectWidth:           _contentWidth
     property real _rectHeight:          _contentWidth * 0.75
@@ -82,7 +82,7 @@ Item {
         }
     }
     //-------------------------------------------------------------------------
-    //-- Microhard
+    //-- Pairing Manager Dialog
     Popup {
         id:                     mhPopup
         width:                  mhBody.width
@@ -111,7 +111,6 @@ Item {
                 QGCLabel {
                     text:           kPairingManager
                     font.family:    ScreenTools.demiboldFontFamily
-                    font.pointSize: ScreenTools.mediumFontPointSize * 1.5
                     anchors.horizontalCenter: parent.horizontalCenter
                     horizontalAlignment: Text.AlignHCenter
                 }
@@ -122,15 +121,15 @@ Item {
                 }
                 Item { width: 1; height: 1; }
                 QGCLabel {
-                    text:           qsTr("To connect to your vehicle, please click on the pairing button in order to put the vehicle in discovery mode")
-                    width:          _contentWidth
-                    wrapMode:       Text.WordWrap
+                    text:               qsTr("To connect to your vehicle, please click on the pairing button in order to put the vehicle in discovery mode")
+                    width:              _contentWidth
+                    wrapMode:           Text.WordWrap
                     horizontalAlignment: Text.AlignHCenter
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
-                Item { width: 1; height: ScreenTools.defaultFontPixelHeight  * 2; }
+                Item { width: 1; height: ScreenTools.defaultFontPixelHeight; }
                 QGCColoredImage {
-                    height:             ScreenTools.defaultFontPixelHeight * 6
+                    height:             ScreenTools.defaultFontPixelHeight * 4
                     width:              height
                     source:             "/custom/img/PairingButton.svg"
                     sourceSize.height:  height
@@ -140,7 +139,7 @@ Item {
                     color:              qgcPal.text
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
-                Item { width: 1; height: ScreenTools.defaultFontPixelHeight  * 2; }
+                Item { width: 1; height: ScreenTools.defaultFontPixelHeight; }
                 GridLayout {
                     columns:            2
                     columnSpacing:      ScreenTools.defaultFontPointSize
@@ -155,7 +154,7 @@ Item {
                     }
                     QGCTextField {
                         id:                 encryptionKey
-                        text:               QGroundControl.pairingManager.pairingKey
+                        text:               QGroundControl.microhardManager.encryptionKey
                         Layout.row:         0
                         Layout.column:      1
                         Layout.fillWidth:   true
@@ -190,7 +189,7 @@ Item {
                         onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin)
                     }
                 }
-                Item { width: 1; height: ScreenTools.defaultFontPixelHeight  * 2; }
+                Item { width: 1; height: ScreenTools.defaultFontPixelHeight; }
                 QGCButton {
                     text:           qsTr("Pair a Vehicle")
                     width:          _contentWidth
