@@ -21,7 +21,6 @@ import QGroundControl.ScreenTools           1.0
 import QGroundControl.Controllers           1.0
 
 import Custom.Widgets                       1.0
-import OnlineServices                       1.0
 
 Item {
     id:                                     toolBar
@@ -30,9 +29,6 @@ Item {
     property bool   inPlanView:             planViewLoader.visible
     property bool   inFlyView:              rootBackground.visible
     property color  menuSeparatorColor:     qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(0,0,0,0.25) : Qt.rgba(1,1,1,0.25)
-
-    property var    _user:                  OnlineService.user
-
     //-------------------------------------------------------------------------
     //-- Setup can be invoked from c++ side
     Connections {
@@ -262,27 +258,6 @@ Item {
             anchors.left:                   parent.left
             anchors.right:                  parent.right
             spacing:                        0
-            Rectangle {
-                Layout.alignment:           Qt.AlignVCenter
-                width:                      parent.width
-                height:                     1
-                color:                      menuSeparatorColor
-            }
-            CustomToolBarButton {
-                id:                         userLogin
-                text:                       _user ? qsTr("Log Out") : qsTr("Login")
-                icon.source:                "/custom/img/padlock.svg"
-                Layout.fillWidth:           true
-                onClicked: {
-                    checked = true
-                    drawer.close()
-                    if(_user) {
-                        OnlineService.logout()
-                    } else {
-                        OnlineService.login()
-                    }
-                }
-            }
             Rectangle {
                 Layout.alignment:           Qt.AlignVCenter
                 width:                      parent.width
