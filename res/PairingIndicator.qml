@@ -186,7 +186,7 @@ Item {
                         Layout.row:         2
                         Layout.column:      1
                         Layout.fillWidth:   true
-                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin)
+                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.pairingPower)
                     }
                 }
                 Item { width: 1; height: ScreenTools.defaultFontPixelHeight; }
@@ -280,6 +280,18 @@ Item {
     }
     //-------------------------------------------------------------------------
     //-- Pairing/Connection Progress
+    MessageDialog {
+        id:                 highPowerPrompt
+        title:              qsTr("Microhard high power mode")
+        text:               qsTr("Confirm switching to high power mode")
+        visible:            QGroundControl.pairingManager.confirmHighPowerMode;
+        standardButtons:    StandardButton.Yes | StandardButton.No
+        onNo:               highPowerPrompt.close()
+        onYes: {
+            QGroundControl.pairingManager.connectToDevice("", false)
+            highPowerPrompt.close()
+        }
+    }
     Popup {
         id:                     progressPopup
         width:                  progressBody.width
@@ -647,7 +659,7 @@ Item {
                             Layout.column:          2
                             text:                   qsTr("Connect")
                             onClicked: {
-                                QGroundControl.pairingManager.connectToDevice(deviceName)
+                                QGroundControl.pairingManager.connectToDevice(deviceName, true)
                                 connectionPopup.close()
                                 progressPopup.open()
                             }
@@ -719,7 +731,7 @@ Item {
                         Layout.column:      1
                         Layout.columnSpan:  1
                         Layout.fillWidth:   true
-                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin)
+                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.pairingPower)
                     }
                 }
 
