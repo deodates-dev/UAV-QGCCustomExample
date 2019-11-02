@@ -586,10 +586,36 @@ Item {
         anchors.bottom:         camControlLoader.bottom
         anchors.right:          camControlLoader.left
         anchors.rightMargin:    ScreenTools.defaultFontPixelWidth * (QGroundControl.videoManager.hasThermal ? -1 : 1)
-        height:                 parent.width * 0.125
-        width:                  height
-        color:                  Qt.rgba(1,1,1,0.25)
-        radius:                 width * 0.5
+
+        dpadPos: "None"
+
+        onXChanged: {
+            if(dpadPos === "Left" || dpadPos === "Right") {
+                dpadPos = (x > ((_root.width - width)/2)) ? "Left" : "Right"
+            }
+        }
+
+        textPointSize: ScreenTools.largeFontPointSize * 1.3
+
+        mainColor: qgcPal.windowShadeDark
+        secondaryColor: qgcPal.windowShade
+        stickColor: qgcPal.buttonText
+        darkerBorders: 1.4
+        buttonBackgroundColor: qgcPal.buttonText
+        buttonContentColor: qgcPal.button
+        textColor: qgcPal.text
+
+        dragActive: true
+        dragMinX: 0
+        dragMaxX: _root.width - stick.width
+        dragMinY: 0
+        dragMaxY: _root.height - stick.height
+
+        panDegrees:     activeVehicle ? activeVehicle.gimbalYaw   : NaN
+        tiltDegrees:    activeVehicle ? activeVehicle.gimbalPitch : NaN
+
+        returnAnimationDurationMs: 100
+
 
         property real _currentPitch:    0
         property real _currentYaw:      0
@@ -606,7 +632,7 @@ Item {
 
         Timer {
             interval:   100  //-- 10Hz
-            running:    gimbalControl.visible && activeVehicle
+            running:    activeVehicle
             repeat:     true
             onTriggered: {
                 if (activeVehicle) {
@@ -614,7 +640,8 @@ Item {
                     var oldYaw = yaw;
                     var pitch = gimbalControl._currentPitch
                     var oldPitch = pitch;
-                    var pitch_stick = (stick.yAxis * 2.0 - 1.0)
+                    var pitch_stick = stick.visible ? -stick.yUnitVal : (camControlLoader.status ===
+                                                      Loader.Ready ?  camControlLoader.item.joystickPitchNormalized : 0)
                     if(_camera && _camera.vendor === "NextVision") {
                         var time_current_seconds = ((new Date()).getTime())/1000.0
                         if(gimbalControl.time_last_seconds === 0.0)
