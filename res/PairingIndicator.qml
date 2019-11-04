@@ -300,7 +300,10 @@ Item {
         text:               qsTr("Confirm switching to high power mode")
         visible:            QGroundControl.pairingManager.confirmHighPowerMode;
         standardButtons:    StandardButton.Yes | StandardButton.No
-        onNo:               highPowerPrompt.close()
+        onNo: {
+            highPowerPrompt.close()
+            runPairing()
+        }
         onYes: {
             QGroundControl.pairingManager.connectToDevice("", false)
             highPowerPrompt.close()
