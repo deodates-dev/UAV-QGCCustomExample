@@ -159,6 +159,7 @@ Item {
                         Layout.row:         0
                         Layout.column:      1
                         Layout.fillWidth:   true
+                        validator:          RegExpValidator { regExp: /^[0-9a-zA-Z_-]{1,64}$/ }
                     }
                     QGCLabel {
                         text:               qsTr("Pairing key:")
@@ -172,6 +173,7 @@ Item {
                         Layout.row:         1
                         Layout.column:      1
                         Layout.fillWidth:   true
+                        validator:          RegExpValidator { regExp: /^[0-9a-zA-Z_-!]{8,64}$/ }
                         echoMode:           TextInput.Password
                     }
                     QGCLabel {
@@ -205,6 +207,12 @@ Item {
                 }
                 Item { width: 1; height: ScreenTools.defaultFontPixelHeight; }
                 QGCButton {
+                    function testEnabled() {
+                        if (!encryptionKey.acceptableInput) return false
+                        if (!networkId.acceptableInput) return false
+                        return true
+                    }
+                    enabled:        testEnabled()
                     text:           qsTr("Pair a Vehicle")
                     width:          _contentWidth
                     onClicked: {
