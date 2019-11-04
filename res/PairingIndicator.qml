@@ -40,6 +40,7 @@ Item {
     property string kPairingManager:    qsTr("Pairing Manager")
 
     function runPairing() {
+        QGroundControl.pairingManager.nidPrefix = "SRR_"
         QGroundControl.pairingManager.firstBoot = false
         if(QGroundControl.pairingManager.pairedDeviceNameList.length > 0 || QGroundControl.pairingManager.connectedDeviceNameList.length > 0) {
             connectionPopup.open()
