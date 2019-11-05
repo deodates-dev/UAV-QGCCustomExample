@@ -147,43 +147,56 @@ Item {
                     width:              _contentWidth
 
                     QGCLabel {
-                        text:               qsTr("Pairing key:")
+                        text:               qsTr("Pairing network id:")
                         Layout.row:         0
                         Layout.column:      0
                         Layout.fillWidth:   true
                     }
                     QGCTextField {
-                        id:                 encryptionKey
-                        text:               QGroundControl.microhardManager.encryptionKey
+                        id:                 networkId
+                        text:               QGroundControl.pairingManager.networkId
                         Layout.row:         0
+                        Layout.column:      1
+                        Layout.fillWidth:   true
+                    }
+                    QGCLabel {
+                        text:               qsTr("Pairing key:")
+                        Layout.row:         1
+                        Layout.column:      0
+                        Layout.fillWidth:   true
+                    }
+                    QGCTextField {
+                        id:                 encryptionKey
+                        text:               QGroundControl.pairingManager.pairingKey
+                        Layout.row:         1
                         Layout.column:      1
                         Layout.fillWidth:   true
                         echoMode:           TextInput.Password
                     }
                     QGCLabel {
                         text:               qsTr("Pairing channel:")
-                        Layout.row:         1
+                        Layout.row:         2
                         Layout.column:      0
                         Layout.fillWidth:   true
                     }
                     QGCComboBox {
                         model:              QGroundControl.microhardManager.channelLabels
                         currentIndex:       QGroundControl.microhardManager.pairingChannel - QGroundControl.microhardManager.channelMin
-                        Layout.row:         1
+                        Layout.row:         2
                         Layout.column:      1
                         Layout.fillWidth:   true
                         onActivated:        QGroundControl.microhardManager.pairingChannel = currentIndex + QGroundControl.microhardManager.channelMin
                     }
                     QGCLabel {
                         text:               qsTr("Connect channel:")
-                        Layout.row:         2
+                        Layout.row:         3
                         Layout.column:      0
                         Layout.fillWidth:   true
                     }
                     QGCComboBox {
                         model:              QGroundControl.microhardManager.channelLabels
                         currentIndex:       QGroundControl.microhardManager.connectingChannel - QGroundControl.microhardManager.channelMin
-                        Layout.row:         2
+                        Layout.row:         3
                         Layout.column:      1
                         Layout.fillWidth:   true
                         onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.pairingPower)
@@ -196,7 +209,7 @@ Item {
                     onClicked: {
                         mhPopup.close()
                         progressPopup.open()
-                        QGroundControl.pairingManager.startMicrohardPairing(encryptionKey.text);
+                        QGroundControl.pairingManager.startMicrohardPairing(encryptionKey.text, networkId.text);
                     }
                 }
                 Item { width: 1; height: 1; }
