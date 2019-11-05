@@ -376,8 +376,8 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     RotationAnimation on rotation {
                         loops:          Animation.Infinite
-                        from:           0
-                        to:             360
+                        from:           360
+                        to:             0
                         duration:       720
                         running:        busyIndicator.visible
                     }
