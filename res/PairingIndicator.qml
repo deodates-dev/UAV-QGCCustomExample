@@ -415,7 +415,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 QGCLabel {
-                    text:               qsTr("Connection Successful")
+                    text:               QGroundControl.pairingManager.pairingStatusStr
                     visible:            connectedIndicator.visible
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
