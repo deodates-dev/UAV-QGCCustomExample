@@ -40,6 +40,7 @@ Item {
     property string kPairingManager:    qsTr("Pairing Manager")
 
     function runPairing() {
+        QGroundControl.pairingManager.nidPrefix = "SRR_"
         QGroundControl.pairingManager.firstBoot = false
         if(QGroundControl.pairingManager.pairedDeviceNameList.length > 0 || QGroundControl.pairingManager.connectedDeviceNameList.length > 0) {
             connectionPopup.open()
@@ -147,56 +148,77 @@ Item {
                     width:              _contentWidth
 
                     QGCLabel {
-                        text:               qsTr("Pairing key:")
+                        text:               qsTr("Pairing network id:")
                         Layout.row:         0
                         Layout.column:      0
                         Layout.fillWidth:   true
                     }
                     QGCTextField {
-                        id:                 encryptionKey
-                        text:               QGroundControl.microhardManager.encryptionKey
+                        id:                 networkId
+                        text:               QGroundControl.pairingManager.networkId
                         Layout.row:         0
                         Layout.column:      1
                         Layout.fillWidth:   true
+                        validator:          RegExpValidator { regExp: /^[0-9a-zA-Z_-]{1,64}$/ }
+                    }
+                    QGCLabel {
+                        text:               qsTr("Pairing key:")
+                        Layout.row:         1
+                        Layout.column:      0
+                        Layout.fillWidth:   true
+                    }
+                    QGCTextField {
+                        id:                 encryptionKey
+                        text:               QGroundControl.pairingManager.pairingKey
+                        Layout.row:         1
+                        Layout.column:      1
+                        Layout.fillWidth:   true
+                        validator:          RegExpValidator { regExp: /^[0-9a-zA-Z_-!]{8,64}$/ }
                         echoMode:           TextInput.Password
                     }
                     QGCLabel {
                         text:               qsTr("Pairing channel:")
-                        Layout.row:         1
+                        Layout.row:         2
                         Layout.column:      0
                         Layout.fillWidth:   true
                     }
                     QGCComboBox {
                         model:              QGroundControl.microhardManager.channelLabels
                         currentIndex:       QGroundControl.microhardManager.pairingChannel - QGroundControl.microhardManager.channelMin
-                        Layout.row:         1
+                        Layout.row:         2
                         Layout.column:      1
                         Layout.fillWidth:   true
                         onActivated:        QGroundControl.microhardManager.pairingChannel = currentIndex + QGroundControl.microhardManager.channelMin
                     }
                     QGCLabel {
                         text:               qsTr("Connect channel:")
-                        Layout.row:         2
+                        Layout.row:         3
                         Layout.column:      0
                         Layout.fillWidth:   true
                     }
                     QGCComboBox {
                         model:              QGroundControl.microhardManager.channelLabels
                         currentIndex:       QGroundControl.microhardManager.connectingChannel - QGroundControl.microhardManager.channelMin
-                        Layout.row:         2
+                        Layout.row:         3
                         Layout.column:      1
                         Layout.fillWidth:   true
-                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin)
+                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.pairingPower)
                     }
                 }
                 Item { width: 1; height: ScreenTools.defaultFontPixelHeight; }
                 QGCButton {
+                    function testEnabled() {
+                        if (!encryptionKey.acceptableInput) return false
+                        if (!networkId.acceptableInput) return false
+                        return true
+                    }
+                    enabled:        testEnabled()
                     text:           qsTr("Pair a Vehicle")
                     width:          _contentWidth
                     onClicked: {
                         mhPopup.close()
                         progressPopup.open()
-                        QGroundControl.pairingManager.startMicrohardPairing(encryptionKey.text);
+                        QGroundControl.pairingManager.startMicrohardPairing(encryptionKey.text, networkId.text);
                     }
                 }
                 Item { width: 1; height: 1; }
@@ -280,6 +302,21 @@ Item {
     }
     //-------------------------------------------------------------------------
     //-- Pairing/Connection Progress
+    MessageDialog {
+        id:                 highPowerPrompt
+        title:              qsTr("Microhard high power mode")
+        text:               qsTr("Confirm switching to high power mode")
+        visible:            QGroundControl.pairingManager.confirmHighPowerMode;
+        standardButtons:    StandardButton.Yes | StandardButton.No
+        onNo: {
+            highPowerPrompt.close()
+            runPairing()
+        }
+        onYes: {
+            QGroundControl.pairingManager.connectToDevice("", false)
+            highPowerPrompt.close()
+        }
+    }
     Popup {
         id:                     progressPopup
         width:                  progressBody.width
@@ -378,7 +415,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 QGCLabel {
-                    text:               qsTr("Connection Successful")
+                    text:               QGroundControl.pairingManager.pairingStatusStr
                     visible:            connectedIndicator.visible
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
@@ -647,7 +684,7 @@ Item {
                             Layout.column:          2
                             text:                   qsTr("Connect")
                             onClicked: {
-                                QGroundControl.pairingManager.connectToDevice(deviceName)
+                                QGroundControl.pairingManager.connectToDevice(deviceName, true)
                                 connectionPopup.close()
                                 progressPopup.open()
                             }
@@ -719,7 +756,7 @@ Item {
                         Layout.column:      1
                         Layout.columnSpan:  1
                         Layout.fillWidth:   true
-                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin)
+                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.pairingPower)
                     }
                 }
 

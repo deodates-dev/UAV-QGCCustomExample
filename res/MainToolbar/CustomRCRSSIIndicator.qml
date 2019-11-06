@@ -27,7 +27,8 @@ Item {
     anchors.bottom: parent.bottom
     visible:        activeVehicle ? activeVehicle.supportsRadio : true
 
-    property bool   _rcRSSIAvailable:   activeVehicle ? activeVehicle.rcRSSI > 0 && activeVehicle.rcRSSI <= 100 : false
+    property bool   _rcRSSIAvailable:   activeVehicle ? (activeVehicle.rcRSSI > 0 && activeVehicle.rcRSSI <= 100) : false
+    property bool   _mhRSSIAvailable:   activeVehicle ? QGroundControl.microhardManager.linkConnected > 0 : false
 
     Component {
         id: rcRSSIInfo
@@ -47,26 +48,29 @@ Item {
 
                 QGCLabel {
                     id:             rssiLabel
-                    text:           qsTr("RC RSSI Status")
+                    text:           qsTr("RSSI Status")
                     font.family:    ScreenTools.demiboldFontFamily
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
 
                 QGCLabel {
                     visible:        !rcrssiGrid.visible
-                    text:           activeVehicle ? qsTr("RC RSSI Data Unavailable") : qsTr("N/A", "No data available")
+                    text:           activeVehicle ? qsTr("RSSI Data Unavailable") : qsTr("N/A", "No data available")
                 }
 
                 GridLayout {
                     id:                 rcrssiGrid
-                    visible:            _rcRSSIAvailable
+                    visible:            _rcRSSIAvailable || _mhRSSIAvailable
                     anchors.margins:    ScreenTools.defaultFontPixelHeight
                     columnSpacing:      ScreenTools.defaultFontPixelWidth
                     columns:            2
                     anchors.horizontalCenter: parent.horizontalCenter
-
-                    QGCLabel { text: qsTr("RSSI:") }
-                    QGCLabel { text: activeVehicle ? (activeVehicle.rcRSSI + "%") : 0 }
+                    QGCLabel { text: qsTr("RC RSSI:"); visible: _rcRSSIAvailable; }
+                    QGCLabel { text: activeVehicle ? (activeVehicle.rcRSSI + "%") : 0; visible: _rcRSSIAvailable; }
+                    QGCLabel { text: qsTr("Uplink RSSI:"); visible: _mhRSSIAvailable; }
+                    QGCLabel { text: activeVehicle ? (QGroundControl.microhardManager.uplinkRSSI + "dBm") : 0; visible: _mhRSSIAvailable; }
+                    QGCLabel { text: qsTr("Downlink RSSI:"); visible: _mhRSSIAvailable; }
+                    QGCLabel { text: activeVehicle ? (QGroundControl.microhardManager.downlinkRSSI + "dBm") : 0; visible: _mhRSSIAvailable; }
                 }
             }
         }
@@ -92,7 +96,7 @@ Item {
         SignalStrength {
             anchors.verticalCenter: parent.verticalCenter
             size:                   parent.height * 0.5
-            percent:                _rcRSSIAvailable ? activeVehicle.rcRSSI : 0
+            percent:                _rcRSSIAvailable ? activeVehicle.rcRSSI : (_mhRSSIAvailable ? QGroundControl.microhardManager.downlinkRSSIPct : 0)
         }
     }
 
