@@ -309,6 +309,7 @@ Item {
         visible:            QGroundControl.pairingManager.confirmHighPowerMode;
         standardButtons:    StandardButton.Yes | StandardButton.No
         onNo: {
+            progressPopup.close()
             highPowerPrompt.close()
             runPairing()
         }
