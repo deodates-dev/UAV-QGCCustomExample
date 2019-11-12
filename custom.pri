@@ -4,8 +4,8 @@ message("Adding Custom Plugin")
 #   Major and minor versions are defined here (manually)
 
 CUSTOM_QGC_VER_MAJOR = 1
-CUSTOM_QGC_VER_MINOR = 5
-CUSTOM_QGC_VER_FIRST_BUILD = 15
+CUSTOM_QGC_VER_MINOR = 4
+CUSTOM_QGC_VER_FIRST_BUILD = 26
 
 exists ($$PWD/.git) {
     CUSTOM_GIT_DESCRIBE = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags)
@@ -19,7 +19,7 @@ exists ($$PWD/.git) {
         CUSTOM_GIT_VERSION = "Git tag: $${CUSTOM_GIT_DESCRIBE}"
     } else {
         # development version "Development branch:sha date"
-        CUSTOM_GIT_VERSION = "$${GIT_BRANCH}:$${GIT_HASH} - $${GIT_TIME}"
+        CUSTOM_GIT_VERSION = "$${CUSTOM_GIT_BRANCH}:$${CUSTOM_GIT_HASH} - $${CUSTOM_GIT_TIME}"
     }
 
     # Build number is automatic
