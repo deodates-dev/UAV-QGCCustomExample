@@ -183,12 +183,13 @@ Item {
                         Layout.fillWidth:   true
                     }
                     QGCComboBox {
+                        id:                 pairingChannel
                         model:              QGroundControl.microhardManager.channelLabels
-                        currentIndex:       QGroundControl.microhardManager.pairingChannel - QGroundControl.microhardManager.channelMin
+                        currentIndex:       QGroundControl.pairingManager.pairingChannel - QGroundControl.microhardManager.channelMin
                         Layout.row:         2
                         Layout.column:      1
                         Layout.fillWidth:   true
-                        onActivated:        QGroundControl.microhardManager.pairingChannel = currentIndex + QGroundControl.microhardManager.channelMin
+                        onActivated:        QGroundControl.pairingManager.pairingChannel = currentIndex + QGroundControl.microhardManager.channelMin
                     }
                     QGCLabel {
                         text:               qsTr("Connect channel:")
@@ -197,8 +198,9 @@ Item {
                         Layout.fillWidth:   true
                     }
                     QGCComboBox {
+                        id:                 connectingChannel
                         model:              QGroundControl.microhardManager.channelLabels
-                        currentIndex:       QGroundControl.microhardManager.connectingChannel - QGroundControl.microhardManager.channelMin
+                        currentIndex:       QGroundControl.pairingManager.connectingChannel - QGroundControl.microhardManager.channelMin
                         Layout.row:         3
                         Layout.column:      1
                         Layout.fillWidth:   true
@@ -218,7 +220,12 @@ Item {
                     onClicked: {
                         mhPopup.close()
                         progressPopup.open()
-                        QGroundControl.pairingManager.startMicrohardPairing(encryptionKey.text, networkId.text);
+                        QGroundControl.pairingManager.startMicrohardPairing(
+                            encryptionKey.text,
+                            networkId.text,
+                            pairingChannel.currentIndex + QGroundControl.microhardManager.channelMin,
+                            connectingChannel.currentIndex + QGroundControl.microhardManager.channelMin
+                        );
                     }
                 }
                 Item { width: 1; height: 1; }
@@ -309,6 +316,7 @@ Item {
         visible:            QGroundControl.pairingManager.confirmHighPowerMode;
         standardButtons:    StandardButton.Yes | StandardButton.No
         onNo: {
+            progressPopup.close()
             highPowerPrompt.close()
             runPairing()
         }
@@ -751,7 +759,7 @@ Item {
                     }
                     QGCComboBox {
                         model:              QGroundControl.microhardManager.channelLabels
-                        currentIndex:       QGroundControl.microhardManager.connectingChannel - QGroundControl.microhardManager.channelMin
+                        currentIndex:       QGroundControl.pairingManager.connectingChannel - QGroundControl.microhardManager.channelMin
                         Layout.row:         0
                         Layout.column:      1
                         Layout.columnSpan:  1
