@@ -22,10 +22,12 @@
 #include "CustomQuickInterface.h"
 
 #include <QSettings>
+#include <QPluginLoader>
 
 static const char* kGroupName       = "CustomSettings";
 static const char* kShowGimbalCtl   = "ShowGimbalCtl";
 static const char* kShowAttitudeWidget = "ShowAttitudeWidget";
+static const char* kVirtualKeyboard = "ShowVirtualKeyboard";
 
 //-----------------------------------------------------------------------------
 CustomQuickInterface::CustomQuickInterface(QObject* parent)
@@ -48,6 +50,7 @@ CustomQuickInterface::init()
     settings.beginGroup(kGroupName);
     _showGimbalControl = settings.value(kShowGimbalCtl, false).toBool();
     _showAttitudeWidget = settings.value(kShowAttitudeWidget, false).toBool();
+    _showVirtualKeyboard = settings.value(kVirtualKeyboard, false).toBool();
 }
 
 //-----------------------------------------------------------------------------
@@ -73,5 +76,18 @@ CustomQuickInterface::setShowAttitudeWidget(bool set)
         settings.beginGroup(kGroupName);
         settings.setValue(kShowAttitudeWidget,set);
         emit showAttitudeWidgetChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+void
+CustomQuickInterface::setShowVirtualKeyboard(bool set)
+{
+    if(_showVirtualKeyboard != set) {
+        _showVirtualKeyboard = set;
+        QSettings settings;
+        settings.beginGroup(kGroupName);
+        settings.setValue(kVirtualKeyboard,set);
+        emit showVirtualKeyboardChanged();
     }
 }
