@@ -280,7 +280,7 @@ Item {
                 visible:                vehicleIndicator._showGps
             }
             QGCLabel {
-                id:                     firstLabel
+                id:                     latLabelValue
                 text:                   activeVehicle ? activeVehicle.gps.lat.value.toFixed(activeVehicle.gps.lat.decimalPlaces) : "-"
                 color:                  _indicatorsColor
                 font.pointSize:         ScreenTools.smallFontPointSize
@@ -299,12 +299,13 @@ Item {
                 visible:                vehicleIndicator._showGps
             }
             QGCLabel {
+                id:                     lonLabelValue
                 text:                   activeVehicle ? activeVehicle.gps.lon.value.toFixed(activeVehicle.gps.lon.decimalPlaces) : "-"
                 color:                  _indicatorsColor
                 font.pointSize:         ScreenTools.smallFontPointSize
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
-                horizontalAlignment:    firstLabel.horizontalAlignment
+                horizontalAlignment:    latLabelValue.horizontalAlignment
                 visible:                vehicleIndicator._showGps
             }
             //-- HDOP
@@ -317,12 +318,13 @@ Item {
                 visible:                vehicleIndicator._showGps
             }
             QGCLabel {
+                id:                     hdopLabelValue
                 text:                   activeVehicle ? activeVehicle.gps.hdop.value.toFixed(activeVehicle.gps.hdop.decimalPlaces) : "-"
                 color:                  _indicatorsColor
                 font.pointSize:         ScreenTools.smallFontPointSize
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
-                horizontalAlignment:    firstLabel.horizontalAlignment
+                horizontalAlignment:    latLabelValue.horizontalAlignment
                 visible:                vehicleIndicator._showGps
             }
 
@@ -408,6 +410,7 @@ Item {
                 color:                  qgcPal.text
             }
             QGCLabel {
+                id:                     flightTimeLabelValue
                 text: {
                         if(activeVehicle)
                             return secondsToHHMMSS(activeVehicle.getFact("flightTime").value)
@@ -417,7 +420,7 @@ Item {
                 font.pointSize:         ScreenTools.smallFontPointSize
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
-                horizontalAlignment:    firstLabel.horizontalAlignment
+                horizontalAlignment:    latLabelValue.horizontalAlignment
             }
             //-- Ground Speed
             QGCColoredImage {
@@ -430,12 +433,13 @@ Item {
                 color:                  qgcPal.text
             }
             QGCLabel {
+                id:                     groundSpeedLabelValue
                 text:                   activeVehicle ? activeVehicle.groundSpeed.value.toFixed(1) + ' ' + activeVehicle.groundSpeed.units : "0.0"
                 color:                  _indicatorsColor
                 font.pointSize:         ScreenTools.smallFontPointSize
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
-                horizontalAlignment:    firstLabel.horizontalAlignment
+                horizontalAlignment:    latLabelValue.horizontalAlignment
             }
             //-- Vertical Speed
             QGCColoredImage {
@@ -449,12 +453,13 @@ Item {
 
             }
             QGCLabel {
+                id:                     verticalSpeedLabelValue
                 text:                   activeVehicle ? activeVehicle.climbRate.value.toFixed(1) + ' ' + activeVehicle.climbRate.units : "0.0"
                 color:                  _indicatorsColor
                 font.pointSize:         ScreenTools.smallFontPointSize
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
-                horizontalAlignment:    firstLabel.horizontalAlignment
+                horizontalAlignment:    latLabelValue.horizontalAlignment
             }
             //-- Third Row
             //-- Odometer
@@ -469,12 +474,13 @@ Item {
 
             }
             QGCLabel {
+                id:                     odometerLabelValue
                 text:                   activeVehicle ? ('00000' + activeVehicle.flightDistance.value.toFixed(0)).slice(-5) + ' ' + activeVehicle.flightDistance.units : "00000"
                 color:                  _indicatorsColor
                 font.pointSize:         ScreenTools.smallFontPointSize
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
-                horizontalAlignment:    firstLabel.horizontalAlignment
+                horizontalAlignment:    latLabelValue.horizontalAlignment
             }
             //-- Altitude
             QGCColoredImage {
@@ -488,12 +494,13 @@ Item {
 
             }
             QGCLabel {
+                id:                     altitudeLabelValue
                 text:                   _altitude
                 color:                  _indicatorsColor
                 font.pointSize:         ScreenTools.smallFontPointSize
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
-                horizontalAlignment:    firstLabel.horizontalAlignment
+                horizontalAlignment:    latLabelValue.horizontalAlignment
             }
             //-- Distance
             QGCColoredImage {
@@ -507,12 +514,13 @@ Item {
 
             }
             QGCLabel {
+                id:                     distanceLabelValue
                 text:                   _distance ? _distanceStr : noGPS
                 color:                  _distance ? _indicatorsColor : qgcPal.colorOrange
                 font.pointSize:         ScreenTools.smallFontPointSize
                 Layout.fillWidth:       true
                 Layout.minimumWidth:    indicatorValueWidth
-                horizontalAlignment:    firstLabel.horizontalAlignment
+                horizontalAlignment:    latLabelValue.horizontalAlignment
             }
         }
         MouseArea {
