@@ -490,7 +490,7 @@ Item {
                         if(QGroundControl.pairingManager.pairingStatus === PairingManager.PairingActive)
                             QGroundControl.pairingManager.stopPairing()
                         else {
-                            //-- TODO: Cancel connection to paired device
+                            QGroundControl.pairingManager.stopConnectingDevice("")
                         }
                         progressPopup.close()
                     }
