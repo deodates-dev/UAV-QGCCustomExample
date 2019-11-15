@@ -14,6 +14,9 @@
         <file alias="PairingIndicator.qml">res/PairingIndicator.qml</file>
         <file alias="PreFlightCheckList.qml">res/PreFlightCheckList.qml</file>
     </qresource>
+    <qresource prefix="/QtQuick/VirtualKeyboard/content/styles/custom">
+        <file alias="style.qml">res/VKStyles/CustomStyle/style.qml</file>
+    </qresource>
     <qresource prefix="custom/img">
         <file alias="altitude.svg">res/Images/altitude.svg</file>
         <file alias="attitude_crosshair.svg">res/Images/attitude_crosshair.svg</file>
