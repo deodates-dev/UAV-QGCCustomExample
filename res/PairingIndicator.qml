@@ -94,6 +94,28 @@ Item {
         x:                      Math.round((mainWindow.width  - width)  * 0.5)
         y:                      Math.round((mainWindow.height - height) * 0.5)
         closePolicy:            Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        QGCColoredImage {
+            property real _margins: ScreenTools.defaultFontPixelHeight * 0.5
+            width:              ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 1.5 : ScreenTools.defaultFontPixelHeight
+            height:             width
+            sourceSize.height:  width
+            anchors.right:      parent.right
+            anchors.top:        parent.top
+            source:             "/res/XDelete.svg"
+            fillMode:           Image.PreserveAspectFit
+            mipmap:             true
+            smooth:             true
+            color:              qgcPal.text
+            MouseArea {
+                anchors.fill:       parent
+                anchors.margins:    ScreenTools.isMobile ? -ScreenTools.defaultFontPixelHeight : 0
+                onClicked: {
+                    mhPopup.close()
+                }
+            }
+        }
+
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
@@ -468,7 +490,7 @@ Item {
                         if(QGroundControl.pairingManager.pairingStatus === PairingManager.PairingActive)
                             QGroundControl.pairingManager.stopPairing()
                         else {
-                            //-- TODO: Cancel connection to paired device
+                            QGroundControl.pairingManager.stopConnectingDevice("")
                         }
                         progressPopup.close()
                     }
@@ -488,7 +510,29 @@ Item {
         parent:                 Overlay.overlay
         x:                      Math.round((mainWindow.width  - width)  * 0.5)
         y:                      Math.round((mainWindow.height - height) * 0.5)
-        closePolicy:            cancelButton.visible ? Popup.NoAutoClose : (Popup.CloseOnEscape | Popup.CloseOnPressOutside)
+        closePolicy:            Popup.CloseOnEscape | Popup.CloseOnPressOutside
+
+        QGCColoredImage {
+            property real _margins: ScreenTools.defaultFontPixelHeight * 0.5
+            width:              ScreenTools.isMobile ? ScreenTools.defaultFontPixelHeight * 1.5 : ScreenTools.defaultFontPixelHeight
+            height:             width
+            sourceSize.height:  width
+            anchors.right:      parent.right
+            anchors.top:        parent.top
+            source:             "/res/XDelete.svg"
+            fillMode:           Image.PreserveAspectFit
+            mipmap:             true
+            smooth:             true
+            color:              qgcPal.text
+            MouseArea {
+                anchors.fill:       parent
+                anchors.margins:    ScreenTools.isMobile ? -ScreenTools.defaultFontPixelHeight : 0
+                onClicked: {
+                    connectionPopup.close()
+                }
+            }
+        }
+
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
