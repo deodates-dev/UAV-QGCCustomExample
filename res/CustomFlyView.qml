@@ -606,7 +606,7 @@ Item {
 
         Timer {
             interval:   100  //-- 10Hz
-            running:    gimbalControl.visible && activeVehicle
+            running:    camControlLoader.visible && activeVehicle
             repeat:     true
             onTriggered: {
                 if (activeVehicle) {
@@ -614,7 +614,7 @@ Item {
                     var oldYaw = yaw;
                     var pitch = gimbalControl._currentPitch
                     var oldPitch = pitch;
-                    var pitch_stick = (stick.yAxis * 2.0 - 1.0)
+                    var pitch_stick = gimbalControl.visible ? (stick.yAxis * 2.0 - 1.0) : (camControlLoader.status === Loader.Ready ?  camControlLoader.item.joystickPitchNormalized : 0)
                     if(_camera && _camera.vendor === "NextVision") {
                         var time_current_seconds = ((new Date()).getTime())/1000.0
                         if(gimbalControl.time_last_seconds === 0.0)
