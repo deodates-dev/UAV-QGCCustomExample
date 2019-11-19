@@ -31,6 +31,7 @@ public:
     CustomQuickInterface(QObject* parent = nullptr);
     ~CustomQuickInterface();
     Q_PROPERTY(bool     showGimbalControl   READ    showGimbalControl   WRITE setShowGimbalControl   NOTIFY showGimbalControlChanged)
+    Q_PROPERTY(bool     useEmbeddedGimbal   READ    useEmbeddedGimbal   WRITE setUseEmbeddedGimbal   NOTIFY useEmbeddedGimbalChanged)
     Q_PROPERTY(bool     showAttitudeWidget  READ    showAttitudeWidget  WRITE setShowAttitudeWidget  NOTIFY showAttitudeWidgetChanged)
     Q_PROPERTY(bool     showVirtualKeyboard READ    showVirtualKeyboard WRITE setShowVirtualKeyboard NOTIFY showVirtualKeyboardChanged)
 
@@ -39,6 +40,9 @@ public:
 
     bool    showGimbalControl           () { return _showGimbalControl; }
     void    setShowGimbalControl        (bool set);
+
+    bool    useEmbeddedGimbal           () { return _useEmbeddedGimbal; }
+    void    setUseEmbeddedGimbal        (bool set);
 
     bool    showAttitudeWidget      () { return _showAttitudeWidget; }
     void    setShowAttitudeWidget   (bool set);
@@ -50,9 +54,11 @@ signals:
     void    showGimbalControlChanged    ();
     void    showAttitudeWidgetChanged();
     void    showVirtualKeyboardChanged();
+    void    useEmbeddedGimbalChanged();
 
 private:
     static bool _showGimbalControl;
+    static bool _useEmbeddedGimbal;
     static bool _showAttitudeWidget;
     static bool _showVirtualKeyboard;
     static std::unique_ptr<QSettings> _settings;

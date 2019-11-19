@@ -660,7 +660,7 @@ Item {
     //-- Gimbal Control
     Rectangle {
         id:                     gimbalControl
-        visible:                camControlLoader.visible && CustomQuickInterface.showGimbalControl && _hasGimbal
+        visible:                camControlLoader.visible && _hasGimbal && CustomQuickInterface.showGimbalControl && !CustomQuickInterface.useEmbeddedGimbal
         anchors.bottom:         camControlLoader.bottom
         anchors.right:          camControlLoader.left
         anchors.rightMargin:    ScreenTools.defaultFontPixelWidth * (QGroundControl.videoManager.hasThermal ? -1 : 1)
@@ -684,7 +684,7 @@ Item {
 
         Timer {
             interval:   100  //-- 10Hz
-            running:    camControlLoader.visible && activeVehicle
+            running:    camControlLoader.visible && activeVehicle && (CustomQuickInterface.useEmbeddedGimbal || CustomQuickInterface.showGimbalControl)
             repeat:     true
             onTriggered: {
                 if (activeVehicle) {

@@ -27,11 +27,13 @@
 std::unique_ptr<QSettings> CustomQuickInterface::_settings;
 
 bool CustomQuickInterface::_showGimbalControl = false;
+bool CustomQuickInterface::_useEmbeddedGimbal = true;
 bool CustomQuickInterface::_showAttitudeWidget = false;
 bool CustomQuickInterface::_showVirtualKeyboard = false;
 
 static const char* kGroupName       = "CustomSettings";
 static const char* kShowGimbalCtl   = "ShowGimbalCtl";
+static const char* kUseEmbeddedGimbal  = "UseEmbeddedGimbal";
 static const char* kShowAttitudeWidget = "ShowAttitudeWidget";
 static const char* kVirtualKeyboard = "ShowVirtualKeyboard";
 
@@ -55,6 +57,7 @@ CustomQuickInterface::initSettings() {
     _settings.reset(new QSettings(QString(QGC_ORG_NAME), QString(QGC_APPLICATION_NAME)));
     _settings->beginGroup(kGroupName);
     _showGimbalControl = _settings->value(kShowGimbalCtl, false).toBool();
+    _useEmbeddedGimbal = _settings->value(kUseEmbeddedGimbal, false).toBool();
     _showAttitudeWidget = _settings->value(kShowAttitudeWidget, false).toBool();
     _showVirtualKeyboard = _settings->value(kVirtualKeyboard, false).toBool();
 }
@@ -73,6 +76,17 @@ CustomQuickInterface::setShowGimbalControl(bool set)
         _showGimbalControl = set;
         _settings->setValue(kShowGimbalCtl,set);
         emit showGimbalControlChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+void
+CustomQuickInterface::setUseEmbeddedGimbal(bool set)
+{
+    if(_useEmbeddedGimbal != set && _settings) {
+        _useEmbeddedGimbal = set;
+        _settings->setValue(kUseEmbeddedGimbal, set);
+        emit useEmbeddedGimbalChanged();
     }
 }
 
