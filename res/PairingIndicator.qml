@@ -824,7 +824,7 @@ Item {
                             Layout.row:             2 + (parent._baseIndex + index) * 2
                             Layout.rowSpan:         2
                             Layout.column:          2
-                            text:                   qsTr("Connect")
+                            text:                   !isConnecting ? qsTr("Connect") : qsTr("Connecting")
                             onClicked: {
                                 QGroundControl.pairingManager.connectToDevice(deviceName, true)
                                 if (!confirmHighPowerMode) {
@@ -832,7 +832,8 @@ Item {
                                     progressPopup.open()
                                 }
                             }
-                            property string deviceName: QGroundControl.pairingManager.extractName(modelData);
+                            property string deviceName: QGroundControl.pairingManager.extractName(modelData)
+                            property bool isConnecting: QGroundControl.pairingManager.connectedDeviceNameList, QGroundControl.pairingManager.isDeviceConnecting(deviceName)
                         }
                     }
                     Repeater {
