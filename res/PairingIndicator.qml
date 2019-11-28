@@ -119,7 +119,7 @@ Item {
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
         Item {
             id:                 mhBody
@@ -269,7 +269,7 @@ Item {
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
         Item {
             id:                 nfcBody
@@ -368,7 +368,7 @@ Item {
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
 
         Item {
@@ -456,7 +456,7 @@ Item {
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
         Item {
             id:                 progressBody
@@ -635,7 +635,7 @@ Item {
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
         Item {
             id:                 connectionBody
