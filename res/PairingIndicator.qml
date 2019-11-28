@@ -338,7 +338,6 @@ Item {
 
     onConfirmHighPowerModeChanged: {
         if (confirmHighPowerMode) {
-            connectionPopup.close()
             _confirmAction = "HighPowerMode"
             _confirmPrompt = qsTr("Confirm switching to high power mode")
             confirmPopup.open()
@@ -362,6 +361,7 @@ Item {
             if (opened) {
                 mhPopup.close()
                 progressPopup.close()
+                connectionPopup.close()
             }
         }
 
