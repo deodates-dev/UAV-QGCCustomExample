@@ -247,6 +247,7 @@ Item {
         mapControl:             mainWindow.flightDisplayMap
         visible:                rootBackground.visible && mainIsMap
     }
+
     //-------------------------------------------------------------------------
     //-- Vehicle Indicator
     Rectangle {
@@ -578,6 +579,83 @@ Item {
             }
         }
     }
+    //-------------------------------------------------------------------------
+    //-- Flight Coordinates View
+    Item {
+        id:             _flightCoordinates
+        z:              _mapAndVideo.z + 3
+        width:          layoutRow.width
+        height:         layoutRow.height
+        anchors.left:   parent.left
+        anchors.leftMargin: ScreenTools.defaultFontPixelHeight
+        anchors.bottom: parent.bottom
+        visible:        QGroundControl.settingsManager.appSettings.displayMGRSCoordinates.rawValue
+
+        property real _fontSize: ScreenTools.defaultFontPointSize * 0.75
+
+        Connections {
+            target: QGroundControl.qgcPositionManger
+            onGcsPositionChanged: {
+                if (activeVehicle && gcsPosition.latitude && Math.abs(gcsPosition.latitude)  > 0.001 && gcsPosition.longitude && Math.abs(gcsPosition.longitude)  > 0.001) {
+                    var gcs = QtPositioning.coordinate(gcsPosition.latitude, gcsPosition.longitude)
+                    gcsPositionLabel.text = QGroundControl.positionToMGRSFormat(gcs)
+                } else {
+                    gcsPositionLabel.text = ""
+                }
+            }
+        }
+
+        Rectangle {
+            id:               coordinatesRectangle
+            anchors.fill:     parent
+            color:            qgcPal.window
+            radius:           ScreenTools.defaultFontPixelWidth * 0.5
+            visible:          vehiclePositionLabel.text !== "" || gcsPositionLabel.text !== ""
+
+            Row {
+                id: layoutRow
+                spacing:          ScreenTools.defaultFontPixelWidth * 0.5
+                anchors.centerIn: parent
+                padding:          ScreenTools.defaultFontPixelWidth * 0.25
+
+                QGCLabel {
+                    text:                    "MGRS"
+                    color:                   qgcPal.text
+                    font.pointSize:          _flightCoordinates._fontSize
+                }
+                QGCColoredImage {
+                     id:                     _icon1
+                     height:                 vehiclePositionLabel.contentHeight * 0.75
+                     width:                  height
+                     color:                  qgcPal.text
+                     source:                 "/qmlimages/PaperPlane.svg"
+                     anchors.verticalCenter: parent.verticalCenter
+                     visible:                vehiclePositionLabel.text !== ""
+                }
+                QGCLabel {
+                    id:                      vehiclePositionLabel
+                    text:                    (activeVehicle && activeVehicle.coordinate) ? QGroundControl.positionToMGRSFormat(activeVehicle.coordinate) : ""
+                    color:                   qgcPal.text
+                    font.pointSize:          _flightCoordinates._fontSize
+                }
+                QGCColoredImage {
+                     id:                     _icon2
+                     height:                 vehiclePositionLabel.contentHeight * 0.75
+                     width:                  height
+                     color:                  qgcPal.text
+                     source:                 "/custom/img/male-solid.svg"
+                     anchors.verticalCenter: parent.verticalCenter
+                     visible:                gcsPositionLabel.text !== ""
+                }
+                QGCLabel {
+                    id:                      gcsPositionLabel
+                    color:                   qgcPal.text
+                    font.pointSize:          _flightCoordinates._fontSize
+                }
+            }
+        }
+    }
+
     //-------------------------------------------------------------------------
     //-- Gimbal Control
     Rectangle {

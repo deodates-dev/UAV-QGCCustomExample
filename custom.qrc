@@ -49,6 +49,7 @@
         <file alias="vertical_speed.svg">res/Images/vertical_speed.svg</file>
         <file alias="void.png">res/Images/void.png</file>
         <file alias="PairingDelete.svg">res/Images/PairingDelete.svg</file>
+        <file alias="male-solid.svg">res/Images/male-solid.svg</file>
     </qresource>
     <qresource prefix="Custom/Widgets">
         <file alias="Custom/Widgets/CustomArtificialHorizon.qml">res/Custom/Widgets/CustomArtificialHorizon.qml</file>
