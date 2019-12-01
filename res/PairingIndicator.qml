@@ -410,6 +410,7 @@ Item {
                         } else if (_confirmAction == "Unpair") {
                             confirmPopup.close()
                             QGroundControl.pairingManager.unpairDevice(_confirmDeviceName)
+                            connectionPopup.open()
                         } else if (_confirmAction == "Disconnect") {
                             confirmPopup.close()
                             progressPopup.open()
@@ -452,6 +453,13 @@ Item {
         x:                      Math.round((mainWindow.width  - width)  * 0.5)
         y:                      Math.round((mainWindow.height - height) * 0.5)
         closePolicy:            cancelButton.visible ? Popup.NoAutoClose : (Popup.CloseOnEscape | Popup.CloseOnPressOutside)
+
+        onOpenedChanged: {
+            if (opened) {
+                mhPopup.close()
+                connectionPopup.close()
+            }
+        }
 
         background: Rectangle {
             anchors.fill:       parent
@@ -552,11 +560,12 @@ Item {
                 //-- Buttons
                 QGCButton {
                     width:                  _contentWidth
-                    visible:                QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairingStatus === PairingManager.Connected || QGroundControl.pairingManager.pairingStatus === PairingManager.Success || QGroundControl.pairingManager.pairingStatus === PairingManager.Error) : false
+                    visible:                QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairingStatus === PairingManager.Connected || QGroundControl.pairingManager.pairingStatus === PairingManager.Disconnected || QGroundControl.pairingManager.pairingStatus === PairingManager.Success || QGroundControl.pairingManager.pairingStatus === PairingManager.Error) : false
                     text:                   qsTr("Done")
                     anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
                         progressPopup.close()
+                        connectionPopup.open()
                     }
                 }
                 QGCButton {
@@ -591,6 +600,7 @@ Item {
                         else {
                             QGroundControl.pairingManager.stopConnectingDevice("")
                         }
+                        connectionPopup.open()
                         progressPopup.close()
                     }
                 }
