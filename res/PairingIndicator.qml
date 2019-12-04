@@ -119,7 +119,7 @@ Item {
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
         Item {
             id:                 mhBody
@@ -269,7 +269,7 @@ Item {
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
         Item {
             id:                 nfcBody
@@ -331,22 +331,118 @@ Item {
     }
     //-------------------------------------------------------------------------
     //-- Pairing/Connection Progress
-    MessageDialog {
-        id:                 highPowerPrompt
-        title:              qsTr("Microhard high power mode")
-        text:               qsTr("Confirm switching to high power mode")
-        visible:            QGroundControl.pairingManager.confirmHighPowerMode;
-        standardButtons:    StandardButton.Yes | StandardButton.No
-        onNo: {
-            progressPopup.close()
-            highPowerPrompt.close()
-            runPairing()
-        }
-        onYes: {
-            QGroundControl.pairingManager.connectToDevice("", false)
-            highPowerPrompt.close()
+    property string _confirmPrompt:     ""
+    property string _confirmAction:     ""
+    property string _confirmDeviceName: ""
+    property bool confirmHighPowerMode: QGroundControl.pairingManager.confirmHighPowerMode
+
+    onConfirmHighPowerModeChanged: {
+        if (confirmHighPowerMode) {
+            _confirmAction = "HighPowerMode"
+            _confirmPrompt = qsTr("Confirm switching to high power mode")
+            confirmPopup.open()
+        } else {
+            confirmPopup.close()
         }
     }
+
+    Popup {
+        id:                     confirmPopup
+        width:                  confirmPopupBody.width
+        height:                 confirmPopupBody.height
+        modal:                  true
+        focus:                  true
+        parent:                 Overlay.overlay
+        x:                      Math.round((mainWindow.width  - width)  * 0.5)
+        y:                      Math.round((mainWindow.height - height) * 0.5)
+        closePolicy:            Popup.NoAutoClose
+
+        onOpenedChanged: {
+            if (opened) {
+                mhPopup.close()
+                progressPopup.close()
+                connectionPopup.close()
+            }
+        }
+
+        background: Rectangle {
+            anchors.fill:       parent
+            color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
+        }
+
+        Item {
+            id:                 confirmPopupBody
+            width:              confirmPopupCol.width  + (ScreenTools.defaultFontPixelWidth   * 8)
+            height:             confirmPopupCol.height + (ScreenTools.defaultFontPixelHeight  * 2)
+            anchors.centerIn:   parent
+            Column {
+                id:                     confirmPopupCol
+                spacing:                _contentSpacing
+                anchors.centerIn:       parent
+                Item { width: 1; height: 1; }
+                QGCLabel {
+                    text:               kPairingManager
+                    font.family:        ScreenTools.demiboldFontFamily
+                    font.pointSize:     ScreenTools.mediumFontPointSize * 1.5
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    horizontalAlignment: Text.AlignHCenter
+                }
+                Item { width: 1; height: 1; }
+                QGCLabel {
+                    text:               _confirmPrompt
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+                Rectangle {
+                    width:              _contentWidth
+                    height:             1
+                    color:              qgcPal.globalTheme !== QGCPalette.Light ? Qt.rgba(1,1,1,0.25) : Qt.rgba(0,0,0,0.25)
+                }
+                Item { width: 1; height: 1; }
+                QGCButton {
+                    width:              _contentWidth
+                    text:               qsTr("Confirm")
+                    Layout.fillWidth:   true
+                    onClicked: {
+                        if (_confirmAction == "HighPowerMode") {
+                            progressPopup.open()
+                            QGroundControl.pairingManager.connectToDevice("", false)
+                        } else if (_confirmAction == "Unpair") {
+                            confirmPopup.close()
+                            QGroundControl.pairingManager.unpairDevice(_confirmDeviceName)
+                            connectionPopup.open()
+                        } else if (_confirmAction == "Disconnect") {
+                            confirmPopup.close()
+                            progressPopup.open()
+                            QGroundControl.pairingManager.disconnectDevice(_confirmDeviceName)
+                        }
+                    }
+                }
+                QGCButton {
+                    width:              _contentWidth
+                    text:               qsTr("Cancel")
+                    Layout.fillWidth:   true
+                    onClicked: {
+                        if (_confirmAction == "HighPowerMode") {
+                            QGroundControl.pairingManager.confirmHighPowerMode = false
+                            runPairing()
+                        } else {
+                            confirmPopup.close()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    property bool errorState: QGroundControl.pairingManager.pairingStatus === PairingManager.PairingError || QGroundControl.pairingManager.pairingStatus === PairingManager.Error
+    property bool pairingStatus: QGroundControl.pairingManager.pairingStatus
+    onPairingStatusChanged: {
+        if (errorState) {
+            progressPopup.open()
+        }
+    }
+
     Popup {
         id:                     progressPopup
         width:                  progressBody.width
@@ -357,10 +453,18 @@ Item {
         x:                      Math.round((mainWindow.width  - width)  * 0.5)
         y:                      Math.round((mainWindow.height - height) * 0.5)
         closePolicy:            cancelButton.visible ? Popup.NoAutoClose : (Popup.CloseOnEscape | Popup.CloseOnPressOutside)
+
+        onOpenedChanged: {
+            if (opened) {
+                mhPopup.close()
+                connectionPopup.close()
+            }
+        }
+
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
         Item {
             id:                 progressBody
@@ -381,7 +485,7 @@ Item {
                 }
                 QGCLabel {
                     text:               QGroundControl.pairingManager ? QGroundControl.pairingManager.pairingStatusStr : ""
-                    visible:            !connectedIndicator.visible
+                    visible:            !connectedIndicator.visible && !errorState
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 Rectangle {
@@ -402,7 +506,10 @@ Item {
                     mipmap:             true
                     smooth:             true
                     color:              qgcPal.text
-                    visible:            QGroundControl.pairingManager.pairingStatus === PairingManager.PairingActive || QGroundControl.pairingManager.pairingStatus === PairingManager.PairingConnecting
+                    visible:            QGroundControl.pairingManager.pairingStatus === PairingManager.PairingActive ||
+                                        QGroundControl.pairingManager.pairingStatus === PairingManager.Connecting ||
+                                        QGroundControl.pairingManager.pairingStatus === PairingManager.Disconnecting ||
+                                        QGroundControl.pairingManager.pairingStatus === PairingManager.ConfiguringModem
                     anchors.horizontalCenter: parent.horizontalCenter
                     RotationAnimation on rotation {
                         loops:          Animation.Infinite
@@ -422,7 +529,7 @@ Item {
                     fillMode:           Image.PreserveAspectFit
                     mipmap:             true
                     smooth:             true
-                    visible:            QGroundControl.pairingManager.errorState
+                    visible:            errorState
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 //-- Connection Successful
@@ -435,7 +542,7 @@ Item {
                     fillMode:           Image.PreserveAspectFit
                     mipmap:             true
                     smooth:             true
-                    visible:            QGroundControl.pairingManager.pairingStatus === PairingManager.PairingConnected
+                    visible:            QGroundControl.pairingManager.pairingStatus === PairingManager.Connected
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 Item { width: 1; height: _contentSpacing; visible: connectedIndicator.visible; }
@@ -446,24 +553,25 @@ Item {
                 }
                 QGCLabel {
                     text:               QGroundControl.pairingManager.pairingStatusStr
-                    visible:            connectedIndicator.visible
+                    visible:            connectedIndicator.visible || errorState
                     anchors.horizontalCenter: parent.horizontalCenter
                 }
                 Item { width: 1; height: _contentSpacing; }
                 //-- Buttons
                 QGCButton {
                     width:                  _contentWidth
-                    visible:                QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairingStatus === PairingManager.PairingConnected) : false
+                    visible:                QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairingStatus === PairingManager.Connected || QGroundControl.pairingManager.pairingStatus === PairingManager.Disconnected || QGroundControl.pairingManager.pairingStatus === PairingManager.Success || QGroundControl.pairingManager.pairingStatus === PairingManager.Error) : false
                     text:                   qsTr("Done")
                     anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
                         progressPopup.close()
+                        connectionPopup.open()
                     }
                 }
                 QGCButton {
                     text:                   qsTr("Pair Another")
                     width:                  _contentWidth
-                    visible:                QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairingStatus === PairingManager.PairingConnected) : false
+                    visible:                QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairingStatus === PairingManager.Connected) : false
                     anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
                         progressPopup.close()
@@ -473,7 +581,7 @@ Item {
                 QGCButton {
                     text:                   qsTr("Try Again")
                     width:                  _contentWidth
-                    visible:                QGroundControl.pairingManager ? QGroundControl.pairingManager.errorState : false
+                    visible:                QGroundControl.pairingManager ? QGroundControl.pairingManager.pairingStatus === PairingManager.PairingError: false
                     anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
                         progressPopup.close()
@@ -483,7 +591,7 @@ Item {
                 QGCButton {
                     id:                     cancelButton
                     width:                  _contentWidth
-                    visible:                QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairingStatus === PairingManager.PairingActive || QGroundControl.pairingManager.pairingStatus === PairingManager.PairingConnecting || QGroundControl.pairingManager.errorState) : false
+                    visible:                QGroundControl.pairingManager ? (QGroundControl.pairingManager.pairingStatus === PairingManager.PairingActive || QGroundControl.pairingManager.pairingStatus === PairingManager.Connecting) : false
                     text:                   qsTr("Cancel")
                     anchors.horizontalCenter: parent.horizontalCenter
                     onClicked: {
@@ -492,6 +600,7 @@ Item {
                         else {
                             QGroundControl.pairingManager.stopConnectingDevice("")
                         }
+                        connectionPopup.open()
                         progressPopup.close()
                     }
                 }
@@ -536,7 +645,7 @@ Item {
         background: Rectangle {
             anchors.fill:       parent
             color:              qgcPal.globalTheme === QGCPalette.Light ? Qt.rgba(1,1,1,0.95) : Qt.rgba(0,0,0,0.75)
-            radius:             ScreenTools.defaultFontPixelWidth * 0.25
+            radius:             ScreenTools.defaultFontPixelWidth * 0.5
         }
         Item {
             id:                 connectionBody
@@ -640,21 +749,12 @@ Item {
                             Layout.column:          2
                             text:                   qsTr("Disconnect")
                             onClicked: {
-                                disconnectPrompt.open()
+                                _confirmAction = "Disconnect"
+                                _confirmDeviceName = deviceName
+                                _confirmPrompt = qsTr("Confirm disconnecting %1?").arg(deviceName)
+                                confirmPopup.open()
                             }
                             property string deviceName: QGroundControl.pairingManager.extractName(modelData);
-
-                            MessageDialog {
-                                id:                 disconnectPrompt
-                                title:              qsTr("Disconnect Vehicle")
-                                text:               qsTr("Confirm disconnecting vehicle %1?").arg(deviceName)
-                                standardButtons:    StandardButton.Yes | StandardButton.No
-                                onNo:               disconnectPrompt.close()
-                                onYes: {
-                                    QGroundControl.pairingManager.disconnectDevice(deviceName)
-                                    disconnectPrompt.close()
-                                }
-                            }
                         }
                     }
                     Repeater {
@@ -734,13 +834,16 @@ Item {
                             Layout.row:             2 + (parent._baseIndex + index) * 2
                             Layout.rowSpan:         2
                             Layout.column:          2
-                            text:                   qsTr("Connect")
+                            text:                   !isConnecting ? qsTr("Connect") : qsTr("Connecting")
                             onClicked: {
                                 QGroundControl.pairingManager.connectToDevice(deviceName, true)
-                                connectionPopup.close()
-                                progressPopup.open()
+                                if (!confirmHighPowerMode) {
+                                    connectionPopup.close()
+                                    progressPopup.open()
+                                }
                             }
-                            property string deviceName: QGroundControl.pairingManager.extractName(modelData);
+                            property string deviceName: QGroundControl.pairingManager.extractName(modelData)
+                            property bool isConnecting: QGroundControl.pairingManager.connectedDeviceNameList, QGroundControl.pairingManager.isDeviceConnecting(deviceName)
                         }
                     }
                     Repeater {
@@ -765,19 +868,10 @@ Item {
                             MouseArea {
                                 anchors.fill:       parent
                                 onClicked: {
-                                    removePrompt.open()
-                                }
-                            }
-
-                            MessageDialog {
-                                id:                 removePrompt
-                                title:              qsTr("Remove Paired Vehicle")
-                                text:               qsTr("Confirm removing %1?").arg(deviceName)
-                                standardButtons:    StandardButton.Yes | StandardButton.No
-                                onNo:               removePrompt.close()
-                                onYes: {
-                                    QGroundControl.pairingManager.removePairedDevice(deviceName)
-                                    removePrompt.close()
+                                    _confirmAction = "Unpair"
+                                    _confirmDeviceName = deviceName
+                                    _confirmPrompt = qsTr("Confirm removing %1?").arg(deviceName)
+                                    confirmPopup.open()
                                 }
                             }
                         }
@@ -808,7 +902,10 @@ Item {
                         Layout.column:      1
                         Layout.columnSpan:  1
                         Layout.fillWidth:   true
-                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.connectingPower)
+                        onActivated:        {
+                            progressPopup.open()
+                            QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.connectingPower)
+                        }
                     }
                 }
 
