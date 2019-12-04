@@ -808,7 +808,7 @@ Item {
                         Layout.column:      1
                         Layout.columnSpan:  1
                         Layout.fillWidth:   true
-                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.pairingPower)
+                        onActivated:        QGroundControl.pairingManager.setConnectingChannel(currentIndex + QGroundControl.microhardManager.channelMin, QGroundControl.microhardManager.connectingPower)
                     }
                 }
 
